@@ -30,11 +30,12 @@ public sealed record CustomPercentileRule : IRule
         }
 
         var timestamp = DateTime.UtcNow;
-        var aggregationName = $"P{Percentile:F1}".Replace(".0", ""); // P95, P99, etc.
+        var aggregationName = $"P{Percentile:F0}"; // P95, P99, etc.
 
-        // Find the percentile aggregation
+        // Find the percentile aggregation (search all aggregations for a percentile match)
         var aggregationResult = metric.AggregatedValues
-            .FirstOrDefault(a => a.OperationName.Equals(aggregationName, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(a => a.OperationName.Equals(aggregationName, StringComparison.OrdinalIgnoreCase)
+                              || a.OperationName.Equals(aggregationName.ToUpperInvariant(), StringComparison.Ordinal));
 
         if (aggregationResult == null)
         {

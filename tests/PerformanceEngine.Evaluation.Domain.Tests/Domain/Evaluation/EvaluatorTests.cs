@@ -302,22 +302,30 @@ public class EvaluatorTests
         // Act
         var results = evaluator.EvaluateMultiple(metrics, rules).ToList();
 
-        // Assert
+        // Assert - Results are sorted by MetricType then Id, so find by metric characteristics
         results.Should().HaveCount(3);
+
+        // Find results by their violation patterns (metrics are sorted, so don't rely on index)
+        var passResult = results.FirstOrDefault(r => r.Violations.Count == 0);
+        var p95FailResult = results.FirstOrDefault(r => r.Violations.Any(v => v.RuleId == "p95-fail"));
+        var errorRateFailResult = results.FirstOrDefault(r => r.Violations.Any(v => v.RuleId == "error-range"));
+
+        // API-Payment (P95=150 <200✓, ErrorRate=2 <5✓): All pass
+        passResult.Should().NotBeNull();
+        passResult!.Outcome.Should().Be(Severity.PASS);
+        passResult.Violations.Should().BeEmpty();
         
-        // API-Payment: All pass
-        results[0].Outcome.Should().Be(Severity.PASS);
-        results[0].Violations.Should().BeEmpty();
+        // API-Search (P95=250 <200✗): P95 fails
+        p95FailResult.Should().NotBeNull();
+        p95FailResult!.Outcome.Should().Be(Severity.FAIL);
+        p95FailResult.Violations.Should().HaveCount(1);
+        p95FailResult.Violations[0].RuleId.Should().Be("p95-fail");
         
-        // API-Search: P95 fails
-        results[1].Outcome.Should().Be(Severity.FAIL);
-        results[1].Violations.Should().HaveCount(1);
-        results[1].Violations[0].RuleId.Should().Be("p95-fail");
-        
-        // API-Checkout: ErrorRate fails
-        results[2].Outcome.Should().Be(Severity.FAIL);
-        results[2].Violations.Should().HaveCount(1);
-        results[2].Violations[0].RuleId.Should().Be("error-range");
+        // API-Checkout (P95=180 <200✓, ErrorRate=10 <5✗): ErrorRate fails
+        errorRateFailResult.Should().NotBeNull();
+        errorRateFailResult!.Outcome.Should().Be(Severity.FAIL);
+        errorRateFailResult.Violations.Should().HaveCount(1);
+        errorRateFailResult.Violations[0].RuleId.Should().Be("error-range");
     }
 
     [Fact]

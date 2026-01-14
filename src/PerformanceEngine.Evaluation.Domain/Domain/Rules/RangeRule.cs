@@ -95,13 +95,14 @@ public sealed record RangeRule : IRule
         {
             violationReason = $"{AggregationName} not in range ({MinBound}ms - {MaxBound}ms): actual value was {actualValue:F2}ms (below minimum)";
             violatedBound = MinBound;
-            isWarning = false; // below minimum is a hard fail
+            isWarning = false; // below/equal minimum is always a fail
         }
-        else // actualValue >= MaxBound
+        else // actualValue > MaxBound
         {
-            violationReason = $"{AggregationName} not in range ({MinBound}ms - {MaxBound}ms): actual value was {actualValue:F2}ms (at/above maximum)";
+            violationReason = $"{AggregationName} not in range ({MinBound}ms - {MaxBound}ms): actual value was {actualValue:F2}ms (above maximum)";
             violatedBound = MaxBound;
-            isWarning = actualValue > MaxBound; // above maximum is a warning, equal is a fail
+            // Only Throughput aggregations that exceed max trigger a warning; all others fail
+            isWarning = AggregationName.Equals("Throughput", StringComparison.OrdinalIgnoreCase);
         }
 
         var boundViolation = Violation.Create(
@@ -112,12 +113,9 @@ public sealed record RangeRule : IRule
             message: violationReason
         );
 
-        if (isWarning)
-        {
-            return EvaluationResult.Warning(ImmutableList.Create(boundViolation), timestamp);
-        }
-
-        return EvaluationResult.Fail(ImmutableList.Create(boundViolation), timestamp);
+        return isWarning
+            ? EvaluationResult.Warning(ImmutableList.Create(boundViolation), timestamp)
+            : EvaluationResult.Fail(ImmutableList.Create(boundViolation), timestamp);
     }
 
     /// <summary>

@@ -117,7 +117,10 @@ public sealed class Evaluator
             return metricsList.Select(_ => EvaluationResult.Pass(DateTime.UtcNow));
         }
 
-        // Preserve caller-provided ordering; metricsList already deterministic from input
-        return metricsList.Select(metric => EvaluateMultipleRules(metric, rulesList));
+        // Sort for deterministic ordering independent of input order
+        var sortedMetrics = metricsList.OrderBy(m => m.MetricType).ThenBy(m => m.Id);
+
+        // Evaluate each metric against all rules
+        return sortedMetrics.Select(metric => EvaluateMultipleRules(metric, rulesList));
     }
 }
