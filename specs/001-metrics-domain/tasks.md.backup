@@ -11,14 +11,14 @@
 
 **Purpose**: Project initialization and C# domain project structure
 
-- [X] T001 Create solution structure: `src/PerformanceEngine.Metrics.Domain/` (C# Class Library)
-- [X] T002 Create test project structure: `tests/PerformanceEngine.Metrics.Domain.Tests/` (xUnit)
-- [X] T003 [P] Configure xUnit 2.8+ and FluentAssertions in test project via .csproj
-- [X] T004 [P] Create `.gitignore` with C# patterns (bin/, obj/, .vs/, etc.)
-- [X] T005 Create directory structure: `src/Domain/Metrics/`, `src/Domain/Aggregations/`, `src/Domain/Events/`
-- [X] T006 Create directory structure: `src/Application/`, `src/Ports/`, `src/Infrastructure/Adapters/`
-- [X] T007 [P] Initialize root `global.usings.cs` with common System namespaces
-- [X] T008 [P] Create `src/PerformanceEngine.Metrics.Domain.csproj` with .NET 10 LTS target framework
+- [ ] T001 Create solution structure: `src/PerformanceEngine.Metrics.Domain/` (C# Class Library)
+- [ ] T002 Create test project structure: `tests/PerformanceEngine.Metrics.Domain.Tests/` (xUnit)
+- [ ] T003 [P] Configure xUnit 2.8+ and FluentAssertions in test project via .csproj
+- [ ] T004 [P] Create `.gitignore` with C# patterns (bin/, obj/, .vs/, etc.)
+- [ ] T005 Create directory structure: `src/Domain/Metrics/`, `src/Domain/Aggregations/`, `src/Domain/Events/`
+- [ ] T006 Create directory structure: `src/Application/`, `src/Ports/`, `src/Infrastructure/Adapters/`
+- [ ] T007 [P] Initialize root `global.usings.cs` with common System namespaces
+- [ ] T008 [P] Create `src/PerformanceEngine.Metrics.Domain.csproj` with .NET 10 LTS target framework
 
 ---
 
@@ -28,19 +28,19 @@
 
 **⚠️ CRITICAL**: All foundational tasks must complete before user story work begins
 
-- [X] T009 Create value object base class: `src/Domain/ValueObject.cs` (abstract base for immutable value objects)
-- [X] T010 Create domain event interface: `src/Domain/Events/IDomainEvent.cs` (empty marker interface)
-- [X] T011 [P] Create enumeration: `src/Domain/Metrics/LatencyUnit.cs` (Nanoseconds, Microseconds, Milliseconds, Seconds)
-- [X] T012 [P] Create enumeration: `src/Domain/Metrics/SampleStatus.cs` (Success, Failure)
-- [X] T013 [P] Create enumeration: `src/Domain/Metrics/ErrorClassification.cs` (Timeout, NetworkError, ApplicationError, UnknownError)
-- [X] T014 Create value object: `src/Domain/Metrics/Latency.cs` with unit conversion logic (Latency(45.5, LatencyUnit.Milliseconds))
-- [X] T015 Create value object: `src/Domain/Metrics/LatencyUnitConverter.cs` (unit conversion between all LatencyUnit types)
-- [X] T016 Create value object: `src/Domain/Metrics/Percentile.cs` with range validation [0, 100] invariant
-- [X] T017 Create value object: `src/Domain/Metrics/AggregationWindow.cs` (abstract base for Full/Sliding/Fixed window types)
-- [X] T018 [P] Create value object: `src/Domain/Metrics/ExecutionContext.cs` (engine name, execution ID, scenario name)
-- [X] T019 Create value object: `src/Domain/Metrics/AggregationResult.cs` (value, unit, computed timestamp)
-- [X] T020 Create port interface: `src/Ports/IExecutionEngineAdapter.cs` (MapResultsToDomain(rawResults) → ImmutableList<Sample>)
-- [X] T021 Create port interface: `src/Ports/IPersistenceRepository.cs` (SaveMetric, RetrieveMetric signatures with deferral note)
+- [ ] T009 Create value object base class: `src/Domain/ValueObject.cs` (abstract base for immutable value objects)
+- [ ] T010 Create domain event interface: `src/Domain/Events/IDomainEvent.cs` (empty marker interface)
+- [ ] T011 [P] Create enumeration: `src/Domain/Metrics/LatencyUnit.cs` (Nanoseconds, Microseconds, Milliseconds, Seconds)
+- [ ] T012 [P] Create enumeration: `src/Domain/Metrics/SampleStatus.cs` (Success, Failure)
+- [ ] T013 [P] Create enumeration: `src/Domain/Metrics/ErrorClassification.cs` (Timeout, NetworkError, ApplicationError, UnknownError)
+- [ ] T014 Create value object: `src/Domain/Metrics/Latency.cs` with unit conversion logic (Latency(45.5, LatencyUnit.Milliseconds))
+- [ ] T015 Create value object: `src/Domain/Metrics/LatencyUnitConverter.cs` (unit conversion between all LatencyUnit types)
+- [ ] T016 Create value object: `src/Domain/Metrics/Percentile.cs` with range validation [0, 100] invariant
+- [ ] T017 Create value object: `src/Domain/Metrics/AggregationWindow.cs` (abstract base for Full/Sliding/Fixed window types)
+- [ ] T018 [P] Create value object: `src/Domain/Metrics/ExecutionContext.cs` (engine name, execution ID, scenario name)
+- [ ] T019 Create value object: `src/Domain/Metrics/AggregationResult.cs` (value, unit, computed timestamp)
+- [ ] T020 Create port interface: `src/Ports/IExecutionEngineAdapter.cs` (MapResultsToDomain(rawResults) → ImmutableList<Sample>)
+- [ ] T021 Create port interface: `src/Ports/IPersistenceRepository.cs` (SaveMetric, RetrieveMetric signatures with deferral note)
 
 **Checkpoint**: Foundation complete - all value objects and ports ready for user story implementation
 
@@ -54,39 +54,39 @@
 
 ### Implementation for User Story 1
 
-- [X] T022 [P] [US1] Create domain entity: `src/Domain/Metrics/Sample.cs` (Guid Id, DateTime Timestamp UTC, Latency Duration, SampleStatus Status, ErrorClassification? errorClassification, ExecutionContext context, Dictionary<string,object>? metadata)
+- [ ] T022 [P] [US1] Create domain entity: `src/Domain/Metrics/Sample.cs` (Guid Id, DateTime Timestamp UTC, Latency Duration, SampleStatus Status, ErrorClassification? errorClassification, ExecutionContext context, Dictionary<string,object>? metadata)
   - Implement immutable constructor with 4 invariants (timestamp ≤ now, duration ≥ 0, error classification required iff Status==Failure, null iff Status==Success)
   - Implement GetHashCode/Equals for comparison
-- [X] T023 [P] [US1] Create domain entity: `src/Domain/Metrics/SampleCollection.cs` (ImmutableList<Sample> sealed container)
+- [ ] T023 [P] [US1] Create domain entity: `src/Domain/Metrics/SampleCollection.cs` (ImmutableList<Sample> sealed container)
   - Implement Add(Sample), AddRange(IEnumerable<Sample>) methods
   - Implement GetSnapshot() and GetSnapshotOrdered(SampleOrdering) for safe iteration
   - Enforce append-only semantics
-- [X] T024 [US1] Create domain entity: `src/Domain/Metrics/Metric.cs` (entity representing aggregated samples)
+- [ ] T024 [US1] Create domain entity: `src/Domain/Metrics/Metric.cs` (entity representing aggregated samples)
   - Properties: Guid Id, SampleCollection samples, AggregationWindow window, string metricType, DateTime computedAt
   - Enforce invariant: Metric cannot exist without samples (samples.Count > 0)
   - Implement immutable after construction
-- [X] T025 [US1] Create unit tests: `tests/Domain/Metrics/SampleTests.cs`
+- [ ] T025 [US1] Create unit tests: `tests/Domain/Metrics/SampleTests.cs`
   - Test immutability: timestamp, duration, status not settable after construction
   - Test invariant violations: future timestamp throws, negative duration throws, missing error classification throws when Status==Failure
   - Test valid instantiation with success sample and failure sample
-- [X] T026 [P] [US1] Create unit tests: `tests/Domain/Metrics/SampleCollectionTests.cs`
+- [ ] T026 [P] [US1] Create unit tests: `tests/Domain/Metrics/SampleCollectionTests.cs`
   - Test Add() appends correctly
   - Test AddRange() adds multiple samples
   - Test GetSnapshot() returns immutable list
   - Test append-only: verify new Add() returns new instance (functional pattern)
-- [X] T027 [P] [US1] Create unit tests: `tests/Domain/Metrics/MetricTests.cs`
+- [ ] T027 [P] [US1] Create unit tests: `tests/Domain/Metrics/MetricTests.cs`
   - Test metric created with samples
   - Test metric cannot be created with empty collection (invariant violation throws)
   - Test immutability: metric properties not settable
-- [X] T028 [US1] Create value object tests: `tests/Domain/Metrics/ValueObjectTests.cs` (comprehensive tests for Latency, Percentile, AggregationWindow)
+- [ ] T028 [US1] Create value object tests: `tests/Domain/Metrics/ValueObjectTests.cs` (comprehensive tests for Latency, Percentile, AggregationWindow)
   - Latency: test unit conversions (ms → ns, ns → ms, etc.), test invalid negative values throw, test equality
   - Percentile: test valid range [0, 100], test boundary values (0, 50, 100), test out-of-range throws
   - AggregationWindow: test FullExecution, SlidingWindow, FixedWindow types
-- [X] T029 [US1] Create contract test: `tests/Domain/SampleInvariants.cs` (verify all invariants enforced consistently)
+- [ ] T029 [US1] Create contract test: `tests/Domain/SampleInvariants.cs` (verify all invariants enforced consistently)
   - Test that no Sample can ever be created violating the 4 invariants
   - Test that SampleCollection maintains insertion order
   - Test that Metric cannot exist without samples
-- [X] T030 [P] [US1] Verify no infrastructure dependencies in domain layer
+- [ ] T030 [P] [US1] Verify no infrastructure dependencies in domain layer
   - Grep verification: no imports of System.Data.*, System.Net.*, HttpClient, or engine-specific types
   - Grep verification: `Domain/**/*.cs` contains zero `using` directives for Infrastructure or persistence
 
@@ -102,39 +102,39 @@
 
 ### Implementation for User Story 2
 
-- [X] T031 [P] [US2] Create aggregation interface: `src/Domain/Aggregations/IAggregationOperation.cs` (Aggregate(samples: SampleCollection, window: AggregationWindow) → AggregationResult)
-- [X] T032 [P] [US2] Create aggregation: `src/Domain/Aggregations/AverageAggregation.cs` (sum all latencies, divide by count, return as AggregationResult)
+- [ ] T031 [P] [US2] Create aggregation interface: `src/Domain/Aggregations/IAggregationOperation.cs` (Aggregate(samples: SampleCollection, window: AggregationWindow) → AggregationResult)
+- [ ] T032 [P] [US2] Create aggregation: `src/Domain/Aggregations/AverageAggregation.cs` (sum all latencies, divide by count, return as AggregationResult)
   - Normalize all samples to consistent unit before calculation
   - Return exact decimal precision (no floating-point approximation)
-- [X] T033 [P] [US2] Create aggregation: `src/Domain/Aggregations/MaxAggregation.cs` (find maximum latency value)
+- [ ] T033 [P] [US2] Create aggregation: `src/Domain/Aggregations/MaxAggregation.cs` (find maximum latency value)
   - Normalize all samples to consistent unit before calculation
   - Return exact value from largest sample
-- [X] T034 [P] [US2] Create aggregation: `src/Domain/Aggregations/MinAggregation.cs` (find minimum latency value)
+- [ ] T034 [P] [US2] Create aggregation: `src/Domain/Aggregations/MinAggregation.cs` (find minimum latency value)
   - Normalize all samples to consistent unit before calculation
   - Return exact value from smallest sample
-- [X] T035 [US2] Create aggregation: `src/Domain/Aggregations/PercentileAggregation.cs` (compute pXX percentile using nearest-rank algorithm)
+- [ ] T035 [US2] Create aggregation: `src/Domain/Aggregations/PercentileAggregation.cs` (compute pXX percentile using nearest-rank algorithm)
   - Implement deterministic nearest-rank algorithm (no interpolation)
   - Normalize all samples to consistent unit before calculation
   - Handle edge cases: single sample, all equal values, exact percentile boundaries
-- [X] T036 [US2] Create normalizer: `src/Domain/Aggregations/AggregationNormalizer.cs`
+- [ ] T036 [US2] Create normalizer: `src/Domain/Aggregations/AggregationNormalizer.cs`
   - Implement NormalizeSamples(samples, targetUnit) → normalized samples with consistent LatencyUnit
   - Preserve all metadata during normalization
   - Verify no sample values lost or modified during unit conversion
-- [X] T037 [US2] Create contract test: `tests/Domain/Aggregations/DeterminismContract.cs` (enforce determinism across all operations)
+- [ ] T037 [US2] Create contract test: `tests/Domain/Aggregations/DeterminismContract.cs` (enforce determinism across all operations)
   - Run AverageAggregation twice with identical inputs → verify byte-identical output
   - Run PercentileAggregation(p95) twice with identical inputs → verify byte-identical output
   - Run all aggregations with large sample set (1M samples) → verify deterministic results
-- [X] T038 [P] [US2] Create unit tests: `tests/Domain/Aggregations/AggregationTests.cs`
+- [ ] T038 [P] [US2] Create unit tests: `tests/Domain/Aggregations/AggregationTests.cs`
   - Test AverageAggregation: empty collection, single sample, multiple samples, all equal values
   - Test MaxAggregation: empty collection, single sample, multiple samples
   - Test MinAggregation: empty collection, single sample, multiple samples
   - Test PercentileAggregation: p0, p50, p95, p99, p100 with various sample distributions
-- [X] T039 [P] [US2] Create unit tests: `tests/Domain/Aggregations/NormalizationTests.cs`
+- [ ] T039 [P] [US2] Create unit tests: `tests/Domain/Aggregations/NormalizationTests.cs`
   - Test normalization from milliseconds to nanoseconds (verify no precision loss)
   - Test normalization from nanoseconds to milliseconds (verify rounding strategy)
   - Test normalization with mixed-unit input (verify all converted to target)
   - Test metadata preservation during normalization
-- [X] T040 [US2] Create verification test: `tests/Domain/Aggregations/ReproducibilityTests.cs` (verify reproducibility across multiple runs)
+- [ ] T040 [US2] Create verification test: `tests/Domain/Aggregations/ReproducibilityTests.cs` (verify reproducibility across multiple runs)
   - Generate fixed seed sample data (deterministic pseudo-random)
   - Compute metric aggregation in Run 1
   - Re-compute same metric aggregation in Run 2
@@ -153,21 +153,21 @@
 
 ### Implementation for User Story 3
 
-- [X] T041 [P] [US3] Create domain event: `src/Domain/Events/SampleCollectedEvent.cs` (implements IDomainEvent)
+- [ ] T041 [P] [US3] Create domain event: `src/Domain/Events/SampleCollectedEvent.cs` (implements IDomainEvent)
   - Properties: Sample sample, DateTime collectedAt, string sourceName (engine)
   - Immutable after construction
-- [X] T042 [P] [US3] Create domain event: `src/Domain/Events/MetricComputedEvent.cs` (implements IDomainEvent)
+- [ ] T042 [P] [US3] Create domain event: `src/Domain/Events/MetricComputedEvent.cs` (implements IDomainEvent)
   - Properties: Metric metric, AggregationOperation operation, DateTime computedAt
   - Immutable after construction
-- [X] T043 [US3] Create application use case: `src/Application/UseCases/NormalizeSamplesUseCase.cs`
+- [ ] T043 [US3] Create application use case: `src/Application/UseCases/NormalizeSamplesUseCase.cs`
   - Input: SampleCollection with mixed LatencyUnits or invalid values
   - Output: normalized SampleCollection with consistent units and valid ranges
   - Enforce: never mutate input; return new normalized collection
-- [X] T044 [US3] Create application use case: `src/Application/UseCases/ValidateAggregationUseCase.cs`
+- [ ] T044 [US3] Create application use case: `src/Application/UseCases/ValidateAggregationUseCase.cs`
   - Input: AggregationRequest (samples, window, aggregationSpec)
   - Output: ValidationResult (valid/invalid with error messages)
   - Enforce: all samples have consistent units, window spec is valid, no null samples
-- [X] T045 [US3] Create application use case: `src/Application/UseCases/ComputeMetricUseCase.cs` (main orchestration)
+- [ ] T045 [US3] Create application use case: `src/Application/UseCases/ComputeMetricUseCase.cs` (main orchestration)
   - Input: SampleCollection, AggregationWindow, aggregation operation type
   - Steps:
     1. Validate samples (ValidateAggregationUseCase)
@@ -176,46 +176,46 @@
     4. Create Metric entity with result
     5. Publish MetricComputedEvent
   - Output: Metric with AggregationResult
-- [X] T046 [P] [US3] Create DTO: `src/Application/Dto/SampleDto.cs` (data transfer format, maps to/from Sample)
+- [ ] T046 [P] [US3] Create DTO: `src/Application/Dto/SampleDto.cs` (data transfer format, maps to/from Sample)
   - Properties matching Sample: timestamp, duration, status, errorClassification, executionContext, metadata
   - Immutable after construction
-- [X] T047 [P] [US3] Create DTO: `src/Application/Dto/MetricDto.cs` (data transfer format, maps to/from Metric)
-- [X] T048 [P] [US3] Create DTO: `src/Application/Dto/AggregationRequestDto.cs` (request format for computation)
-- [X] T049 [US3] Create application service: `src/Application/Services/MetricService.cs` (orchestrator)
+- [ ] T047 [P] [US3] Create DTO: `src/Application/Dto/MetricDto.cs` (data transfer format, maps to/from Metric)
+- [ ] T048 [P] [US3] Create DTO: `src/Application/Dto/AggregationRequestDto.cs` (request format for computation)
+- [ ] T049 [US3] Create application service: `src/Application/Services/MetricService.cs` (orchestrator)
   - Method: ComputeMetric(AggregationRequestDto) → MetricDto
   - Delegate to ComputeMetricUseCase internally
   - Handle errors and return DTO
-- [X] T050 [US3] Create adapter implementation: `src/Infrastructure/Adapters/K6EngineAdapter.cs` (implements IExecutionEngineAdapter)
+- [ ] T050 [US3] Create adapter implementation: `src/Infrastructure/Adapters/K6EngineAdapter.cs` (implements IExecutionEngineAdapter)
   - MapResultsToDomain method converts k6-specific JSON/object format to SampleCollection
   - Ensure all k6 results map to standard ErrorClassification (not k6-specific error codes)
   - Example: k6 HTTP error 504 → ErrorClassification.Timeout
-- [X] T051 [US3] Create adapter implementation: `src/Infrastructure/Adapters/JMeterEngineAdapter.cs` (implements IExecutionEngineAdapter)
+- [ ] T051 [US3] Create adapter implementation: `src/Infrastructure/Adapters/JMeterEngineAdapter.cs` (implements IExecutionEngineAdapter)
   - MapResultsToDomain method converts JMeter-specific format to SampleCollection
   - Ensure all JMeter results map to standard ErrorClassification
   - Example: JMeter "Read timed out" → ErrorClassification.Timeout
-- [X] T052 [P] [US3] Create contract test: `tests/Application/UseCaseTests.cs` (verify use cases work without infrastructure)
+- [ ] T052 [P] [US3] Create contract test: `tests/Application/UseCaseTests.cs` (verify use cases work without infrastructure)
   - Test NormalizeSamplesUseCase with mixed units
   - Test ValidateAggregationUseCase with invalid samples
   - Test ComputeMetricUseCase end-to-end
-- [X] T053 [P] [US3] Create adapter contract test: `tests/Infrastructure/Adapters/K6AdapterTests.cs`
+- [ ] T053 [P] [US3] Create adapter contract test: `tests/Infrastructure/Adapters/K6AdapterTests.cs`
   - Test K6 success sample maps to domain Sample with Status==Success
   - Test K6 HTTP timeout (504) maps to ErrorClassification.Timeout
   - Test K6 connection error maps to ErrorClassification.NetworkError
   - Verify no k6-specific fields leak into domain model
-- [X] T054 [P] [US3] Create adapter contract test: `tests/Infrastructure/Adapters/JMeterAdapterTests.cs`
+- [ ] T054 [P] [US3] Create adapter contract test: `tests/Infrastructure/Adapters/JMeterAdapterTests.cs`
   - Test JMeter success sample maps to domain Sample with Status==Success
   - Test JMeter timeout maps to ErrorClassification.Timeout
   - Test JMeter connection error maps to ErrorClassification.NetworkError
   - Verify no JMeter-specific fields leak into domain model
-- [X] T055 [US3] Create integration test: `tests/Application/IntegrationTests/CrossAdapterCompatibilityTests.cs` (verify different adapters work with same evaluation rule)
+- [ ] T055 [US3] Create integration test: `tests/Application/IntegrationTests/CrossAdapterCompatibilityTests.cs` (verify different adapters work with same evaluation rule)
   - Create sample data from K6 adapter → normalize → aggregate
   - Create sample data from JMeter adapter → normalize → aggregate
   - Verify both produce identical Metric results when aggregation parameters identical
   - Verify evaluation rule references only domain concepts (Metric, Sample, Latency)
-- [X] T056 [P] [US3] Create integration test: `tests/Application/IntegrationTests/MetricServiceIntegrationTests.cs`
+- [ ] T056 [P] [US3] Create integration test: `tests/Application/IntegrationTests/MetricServiceIntegrationTests.cs`
   - Test MetricService.ComputeMetric with multiple aggregation types
   - Test end-to-end: raw results → adapter → use case → metric → DTO
-- [X] T057 [US3] Verify no engine-specific references in domain or application layers
+- [ ] T057 [US3] Verify no engine-specific references in domain or application layers
   - Grep verification: no imports of "K6", "JMeter", "Gatling" in `Domain/**` or `Application/**`
   - Grep verification: ports/ directory references only domain abstractions
   - Manual code review: all engine logic isolated to Infrastructure/Adapters/
@@ -228,16 +228,16 @@
 
 **Purpose**: Documentation, configuration, and final validation
 
-- [X] T058 Create project documentation: `README.md` in project root
+- [ ] T058 Create project documentation: `README.md` in project root
   - Quick start: how to use MetricService to compute metrics
   - Architecture overview (Clean Architecture diagram)
   - How to add new aggregation operation
   - How to add new engine adapter
-- [X] T059 Create implementation guide: `IMPLEMENTATION_GUIDE.md`
+- [ ] T059 Create implementation guide: `IMPLEMENTATION_GUIDE.md`
   - Step-by-step walkthrough of all 3 user stories
   - Code examples for each domain entity
   - Adapter template for new engines
-- [X] T060 [P] Create code style guide: `.editorconfig` with C# formatting conventions
+- [ ] T060 [P] Create code style guide: `.editorconfig` with C# formatting conventions
   - Enforce immutability: property initialization over setters
   - Enforce null safety: nullable reference types enabled
 - [ ] T061 Create build configuration: `Directory.Build.props` with shared version and target framework

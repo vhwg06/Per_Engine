@@ -29,7 +29,7 @@ public sealed class K6EngineAdapter
         foreach (var result in k6Results)
         {
             var sample = MapK6ResultToSample(result, executionContext);
-            collection.Add(sample);
+            collection = collection.Add(sample);
         }
 
         return collection;

@@ -29,7 +29,7 @@ public sealed class JMeterEngineAdapter
         foreach (var result in jmeterResults)
         {
             var sample = MapJMeterResultToSample(result, executionContext);
-            collection.Add(sample);
+            collection = collection.Add(sample);
         }
 
         return collection;
