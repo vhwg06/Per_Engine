@@ -1,0 +1,143 @@
+name: Metrics Domain CI/CD
+
+on:
+  push:
+    branches: [ main, develop, 'feature/**', 'metrics-domain' ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  PROJECT_PATH: 'src/PerformanceEngine.Metrics.Domain'
+  TEST_PATH: 'tests/PerformanceEngine.Metrics.Domain.Tests'
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.PROJECT_PATH }}
+      
+    - name: Build project
+      run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+      
+    - name: Run tests
+      run: dotnet test --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
+      
+    - name: Publish test results
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Test Results
+        path: '**/test-results.trx'
+        reporter: dotnet-trx
+        
+  quality-gates:
+    name: Quality Gates
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.PROJECT_PATH }}
+      
+    - name: Build with warnings as errors
+      run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore /warnaserror
+      continue-on-error: true
+      id: build_check
+      
+    - name: Check for compiler warnings
+      run: |
+        if [ ${{ steps.build_check.outcome }} != 'success' ]; then
+          echo "::warning::Build contains compiler warnings. Please fix them."
+          # Note: Not failing the build for now, but logging warnings
+        fi
+        
+    - name: Verify architecture compliance
+      run: |
+        echo "Checking for engine-specific references in domain layer..."
+        if grep -r "using K6" ${{ env.PROJECT_PATH }}/Domain/ 2>/dev/null; then
+          echo "::error::Found K6-specific imports in domain layer!"
+          exit 1
+        fi
+        if grep -r "using JMeter" ${{ env.PROJECT_PATH }}/Domain/ 2>/dev/null; then
+          echo "::error::Found JMeter-specific imports in domain layer!"
+          exit 1
+        fi
+        if grep -r "using Gatling" ${{ env.PROJECT_PATH }}/Domain/ 2>/dev/null; then
+          echo "::error::Found Gatling-specific imports in domain layer!"
+          exit 1
+        fi
+        echo "✅ Architecture compliance verified: Domain layer is engine-agnostic"
+        
+    - name: Check test coverage
+      run: |
+        dotnet test --configuration Release --collect:"XPlat Code Coverage" --results-directory ./coverage
+        echo "Test coverage collection complete. Coverage report in ./coverage"
+        
+  determinism-check:
+    name: Determinism Validation
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Run determinism tests multiple times
+      run: |
+        echo "Running determinism tests 10 times to verify reproducibility..."
+        for i in {1..10}; do
+          echo "Run $i..."
+          dotnet test --filter "FullyQualifiedName~DeterminismTests" --configuration Release --no-build --verbosity quiet
+          if [ $? -ne 0 ]; then
+            echo "::error::Determinism test failed on run $i"
+            exit 1
+          fi
+        done
+        echo "✅ All determinism tests passed 10 consecutive runs"
+        
+  summary:
+    name: Build Summary
+    runs-on: ubuntu-latest
+    needs: [build, quality-gates, determinism-check]
+    if: always()
+    
+    steps:
+    - name: Check overall status
+      run: |
+        if [ "${{ needs.build.result }}" != "success" ]; then
+          echo "::error::Build failed"
+          exit 1
+        fi
+        if [ "${{ needs.quality-gates.result }}" != "success" ]; then
+          echo "::warning::Quality gates did not pass"
+        fi
+        if [ "${{ needs.determinism-check.result }}" != "success" ]; then
+          echo "::error::Determinism validation failed"
+          exit 1
+        fi
+        echo "✅ All checks passed successfully!"

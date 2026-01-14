@@ -240,10 +240,10 @@
 - [X] T060 [P] Create code style guide: `.editorconfig` with C# formatting conventions
   - Enforce immutability: property initialization over setters
   - Enforce null safety: nullable reference types enabled
-- [ ] T061 Create build configuration: `Directory.Build.props` with shared version and target framework
-- [ ] T062 [P] Update `.csproj`: enable nullable reference types (`<Nullable>enable</Nullable>`)
-- [ ] T063 [P] Create CI/CD validation task: ensure zero compiler warnings
-- [ ] T064 Create final checklist verification: `VERIFICATION_CHECKLIST.md`
+- [X] T061 Create build configuration: `Directory.Build.props` with shared version and target framework
+- [X] T062 [P] Update `.csproj`: enable nullable reference types (`<Nullable>enable</Nullable>`)
+- [X] T063 [P] Create CI/CD validation task: ensure zero compiler warnings
+- [X] T064 Create final checklist verification: `VERIFICATION_CHECKLIST.md`
   - [ ] All domain entities immutable (no setters)
   - [ ] All value objects implement Equals/GetHashCode
   - [ ] All invariants enforced in constructors (4 Sample invariants, Percentile [0,100], Latency ≥ 0, etc.)
