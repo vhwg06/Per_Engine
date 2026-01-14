@@ -1,0 +1,44 @@
+# C# / .NET
+bin/
+obj/
+.vs/
+.vscode/
+*.user
+*.suo
+*.csproj.user
+*.DotSettings
+*.DotSettings.user
+packages/
+.package/
+.nuget/
+
+# Visual Studio
+.idea/
+.DS_Store
+Thumbs.db
+
+# Build outputs
+out/
+dist/
+build/
+
+# IDE
+*.swp
+*.swo
+*~
+*.swn
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+*.log
+*.tmp
+*.temp
+*.cache
+
+# Test results
+TestResults/
+coverage/
