@@ -1,0 +1,330 @@
+namespace PerformanceEngine.Evaluation.Domain.Tests.Domain.Rules;
+
+public class RangeRuleTests
+{
+    [Fact]
+    public void Evaluate_ValueInRange_ReturnsPass()
+    {
+        // Arrange
+        var rule = new RangeRule
+        {
+            Id = "range-rule-1",
+            Name = "Error Rate Range",
+            Description = "Error rate must be between 1% and 5%",
+            AggregationName = "ErrorRate",
+            MinBound = 1.0,
+            MaxBound = 5.0,
+        };
+
+        var metric = TestMetricFactory.CreateMetric(
+            aggregationName: "ErrorRate",
+            aggregationValue: 3.0
+        );
+
+        // Act
+        var result = rule.Evaluate(metric);
+
+        // Assert
+        result.Outcome.Should().Be(Severity.PASS);
+        result.Violations.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Evaluate_ValueBelowMin_ReturnsFail()
+    {
+        // Arrange
+        var rule = new RangeRule
+        {
+            Id = "range-rule-2",
+            Name = "P95 Range",
+            Description = "P95 must be between 100ms and 500ms",
+            AggregationName = "P95",
+            MinBound = 100.0,
+            MaxBound = 500.0,
+        };
+
+        var metric = TestMetricFactory.CreateMetric(
+            aggregationName: "P95",
+            aggregationValue: 50.0 // Below minimum
+        );
+
+        // Act
+        var result = rule.Evaluate(metric);
+
+        // Assert
+        result.Outcome.Should().Be(Severity.FAIL);
+        result.Violations.Should().HaveCount(1);
+        result.Violations[0].RuleId.Should().Be("range-rule-2");
+        result.Violations[0].ActualValue.Should().Be(50.0);
+    }
+
+    [Fact]
+    public void Evaluate_ValueAboveMax_ReturnsFail()
+    {
+        // Arrange
+        var rule = new RangeRule
+        {
+            Id = "range-rule-3",
+            Name = "Throughput Range",
+            Description = "Throughput must be between 100 and 1000 req/s",
+            AggregationName = "Throughput",
+            MinBound = 100.0,
+            MaxBound = 1000.0,
+        };
+
+        var metric = TestMetricFactory.CreateMetric(
+            aggregationName: "Throughput",
+            aggregationValue: 1500.0 // Above maximum
+        );
+
+        // Act
+        var result = rule.Evaluate(metric);
+
+        // Assert
+        result.Outcome.Should().Be(Severity.WARN);
+        result.Violations.Should().HaveCount(1);
+        result.Violations[0].RuleId.Should().Be("range-rule-3");
+        result.Violations[0].ActualValue.Should().Be(1500.0);
+    }
+
+    [Fact]
+    public void Evaluate_ValueEqualToMin_ReturnsFail()
+    {
+        // Arrange (exclusive bounds: min < value < max)
+        var rule = new RangeRule
+        {
+            Id = "range-rule-4",
+            Name = "Response Time Range",
+            Description = "Response time must be between 10ms and 100ms",
+            AggregationName = "Average",
+            MinBound = 10.0,
+            MaxBound = 100.0,
+        };
+
+        var metric = TestMetricFactory.CreateMetric(
+            aggregationName: "Average",
+            aggregationValue: 10.0 // Equal to minimum (exclusive, so fails)
+        );
+
+        // Act
+        var result = rule.Evaluate(metric);
+
+        // Assert
+        result.Outcome.Should().Be(Severity.FAIL);
+        result.Violations.Should().HaveCount(1);
+        result.Violations[0].Message.Should().Contain("not in range");
+    }
+
+    [Fact]
+    public void Evaluate_ValueEqualToMax_ReturnsFail()
+    {
+        // Arrange (exclusive bounds: min < value < max)
+        var rule = new RangeRule
+        {
+            Id = "range-rule-5",
+            Name = "Latency Range",
+            Description = "Latency must be between 50ms and 200ms",
+            AggregationName = "P99",
+            MinBound = 50.0,
+            MaxBound = 200.0,
+        };
+
+        var metric = TestMetricFactory.CreateMetric(
+            aggregationName: "P99",
+            aggregationValue: 200.0 // Equal to maximum (exclusive, so fails)
+        );
+
+        // Act
+        var result = rule.Evaluate(metric);
+
+        // Assert
+        result.Outcome.Should().Be(Severity.FAIL);
+        result.Violations.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public void Evaluate_MissingAggregation_ReturnsFail()
+    {
+        // Arrange
+        var rule = new RangeRule
+        {
+            Id = "range-rule-6",
+            Name = "Missing Agg Test",
+            Description = "Test missing aggregation",
+            AggregationName = "NonExistent",
+            MinBound = 0.0,
+            MaxBound = 100.0,
+        };
+
+        var metric = TestMetricFactory.CreateMetric(
+            aggregationName: "P95",
+            aggregationValue: 50.0
+        );
+
+        // Act
+        var result = rule.Evaluate(metric);
+
+        // Assert
+        result.Outcome.Should().Be(Severity.FAIL);
+        result.Violations.Should().HaveCount(1);
+        result.Violations[0].Message.Should().Contain("not found");
+    }
+
+    [Fact]
+    public void Evaluate_ValidRange_BoundariesCorrect()
+    {
+        // Arrange
+        var rule = new RangeRule
+        {
+            Id = "range-rule-7",
+            Name = "Boundary Test",
+            Description = "Test boundary behavior",
+            AggregationName = "Value",
+            MinBound = 10.0,
+            MaxBound = 20.0,
+        };
+
+        var validMetric = TestMetricFactory.CreateMetric(
+            aggregationName: "Value",
+            aggregationValue: 15.0 // Clearly in range
+        );
+
+        // Act
+        var result = rule.Evaluate(validMetric);
+
+        // Assert
+        result.Outcome.Should().Be(Severity.PASS);
+        result.Violations.Should().BeEmpty();
+    }
+
+    [Theory]
+    [InlineData(9.9)]   // Just below min
+    [InlineData(20.1)]  // Just above max
+    [InlineData(5.0)]   // Well below
+    [InlineData(30.0)]  // Well above
+    public void Evaluate_OutOfRange_ReturnsFail(double value)
+    {
+        // Arrange
+        var rule = new RangeRule
+        {
+            Id = "range-rule-theory",
+            Name = "Theory Range Test",
+            Description = "Test multiple out-of-range values",
+            AggregationName = "TestValue",
+            MinBound = 10.0,
+            MaxBound = 20.0,
+        };
+
+        var metric = TestMetricFactory.CreateMetric(
+            aggregationName: "TestValue",
+            aggregationValue: value
+        );
+
+        // Act
+        var result = rule.Evaluate(metric);
+
+        // Assert
+        result.Outcome.Should().Be(Severity.FAIL);
+        result.Violations.Should().HaveCount(1);
+    }
+
+    [Theory]
+    [InlineData(10.1)]  // Just above min
+    [InlineData(15.0)]  // Middle
+    [InlineData(19.9)]  // Just below max
+    public void Evaluate_InRange_ReturnsPass(double value)
+    {
+        // Arrange
+        var rule = new RangeRule
+        {
+            Id = "range-rule-pass-theory",
+            Name = "Theory Pass Test",
+            Description = "Test multiple in-range values",
+            AggregationName = "TestValue",
+            MinBound = 10.0,
+            MaxBound = 20.0,
+        };
+
+        var metric = TestMetricFactory.CreateMetric(
+            aggregationName: "TestValue",
+            aggregationValue: value
+        );
+
+        // Act
+        var result = rule.Evaluate(metric);
+
+        // Assert
+        result.Outcome.Should().Be(Severity.PASS);
+        result.Violations.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Evaluate_ViolationMessage_ContainsRangeInformation()
+    {
+        // Arrange
+        var rule = new RangeRule
+        {
+            Id = "range-rule-msg",
+            Name = "Message Test",
+            Description = "Verify violation message format",
+            AggregationName = "Metric",
+            MinBound = 100.0,
+            MaxBound = 200.0,
+        };
+
+        var metric = TestMetricFactory.CreateMetric(
+            aggregationName: "Metric",
+            aggregationValue: 50.0
+        );
+
+        // Act
+        var result = rule.Evaluate(metric);
+
+        // Assert
+        result.Violations.Should().HaveCount(1);
+        var violation = result.Violations[0];
+        violation.Message.Should().NotBeNullOrEmpty();
+        violation.ActualValue.Should().Be(50.0);
+        violation.RuleId.Should().Be("range-rule-msg");
+    }
+
+    [Fact]
+    public void RangeRule_Equality_WorksCorrectly()
+    {
+        // Arrange
+        var rule1 = new RangeRule
+        {
+            Id = "same-rule",
+            Name = "Same Rule",
+            Description = "Test equality",
+            AggregationName = "Test",
+            MinBound = 10.0,
+            MaxBound = 20.0,
+        };
+
+        var rule2 = new RangeRule
+        {
+            Id = "same-rule",
+            Name = "Same Rule",
+            Description = "Test equality",
+            AggregationName = "Test",
+            MinBound = 10.0,
+            MaxBound = 20.0,
+        };
+
+        var rule3 = new RangeRule
+        {
+            Id = "different-rule",
+            Name = "Different Rule",
+            Description = "Test inequality",
+            AggregationName = "Test",
+            MinBound = 10.0,
+            MaxBound = 20.0,
+        };
+
+        // Act & Assert
+        rule1.Should().Be(rule2);
+        rule1.Should().NotBe(rule3);
+        rule1.GetHashCode().Should().Be(rule2.GetHashCode());
+    }
+}

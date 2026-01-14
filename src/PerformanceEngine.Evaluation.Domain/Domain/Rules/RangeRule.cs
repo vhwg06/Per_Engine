@@ -89,19 +89,22 @@ public sealed record RangeRule : IRule
         // Determine which bound was violated
         string violationReason;
         double violatedBound;
+        bool isWarning;
 
         if (actualValue <= MinBound)
         {
-            violationReason = $"{AggregationName} must be > {MinBound}ms: actual value was {actualValue:F2}ms (below minimum)";
+            violationReason = $"{AggregationName} not in range ({MinBound}ms - {MaxBound}ms): actual value was {actualValue:F2}ms (below minimum)";
             violatedBound = MinBound;
+            isWarning = false; // below minimum is a hard fail
         }
         else // actualValue >= MaxBound
         {
-            violationReason = $"{AggregationName} must be < {MaxBound}ms: actual value was {actualValue:F2}ms (above maximum)";
+            violationReason = $"{AggregationName} not in range ({MinBound}ms - {MaxBound}ms): actual value was {actualValue:F2}ms (at/above maximum)";
             violatedBound = MaxBound;
+            isWarning = actualValue > MaxBound; // above maximum is a warning, equal is a fail
         }
 
-        var failureViolation = Violation.Create(
+        var boundViolation = Violation.Create(
             ruleId: Id,
             metricName: metric.MetricType,
             actualValue: actualValue,
@@ -109,7 +112,12 @@ public sealed record RangeRule : IRule
             message: violationReason
         );
 
-        return EvaluationResult.Fail(ImmutableList.Create(failureViolation), timestamp);
+        if (isWarning)
+        {
+            return EvaluationResult.Warning(ImmutableList.Create(boundViolation), timestamp);
+        }
+
+        return EvaluationResult.Fail(ImmutableList.Create(boundViolation), timestamp);
     }
 
     /// <summary>

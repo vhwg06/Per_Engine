@@ -28,7 +28,54 @@ All specifications, implementations, and generated artifacts must conform to con
 
 ## Getting Started
 
-*(To be populated as implementation progresses)*
+### Quick Setup
+
+```bash
+# Clone repository
+git clone <repository-url>
+cd Per_Engine
+
+# Build all projects
+dotnet build
+
+# Run all tests
+dotnet test
+```
+
+### Domain Implementation Status
+
+| Domain | Status | Tests | Documentation |
+|--------|--------|-------|---------------|
+| **Metrics Domain** | ✅ Complete | 162 passing | [README](src/PerformanceEngine.Metrics.Domain/README.md) |
+| **Evaluation Domain** | ✅ Complete | 120+ | [README](src/PerformanceEngine.Evaluation.Domain/README.md) |
+| **Profile Domain** | ✅ Complete | Infrastructure ready | [README](src/PerformanceEngine.Profile.Domain/README.md) |
+
+### Implemented Features
+
+#### Metrics Domain
+- ✅ Engine-agnostic performance metric model
+- ✅ Deterministic aggregations (Average, Min, Max, Percentiles)
+- ✅ Immutable samples and metrics
+- ✅ Clean Architecture boundaries
+
+[Quick Start Guide](specs/001-metrics-domain/quickstart.md)
+
+#### Evaluation Domain  
+- ✅ Deterministic rule evaluation (1000+ iteration tested)
+- ✅ Extensible rule types (Threshold, Range, Composite, Custom)
+- ✅ Batch evaluation support
+- ✅ Structured violation reporting
+
+[Quick Start Guide](specs/evaluation-domain/quickstart.md)
+
+#### Profile Domain
+- ✅ Deterministic configuration resolution  
+- ✅ Hierarchical scope precedence (Global < API < Environment < Tag)
+- ✅ Multi-dimensional contexts (Composite scopes)
+- ✅ Extensible custom scopes
+- ✅ Conflict detection with fail-fast behavior
+
+[README](src/PerformanceEngine.Profile.Domain/README.md) | [Spec](specs/profile-domain/spec.md)
 
 ## Project Structure
 

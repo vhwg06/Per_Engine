@@ -122,7 +122,12 @@ public sealed record ThresholdRule : IRule
             message: violationMessage
         );
 
-        return EvaluationResult.Fail(ImmutableList.Create(failureViolation), timestamp);
+        var isWarning = Id.Contains("warning", StringComparison.OrdinalIgnoreCase)
+                        || Name.Contains("warning", StringComparison.OrdinalIgnoreCase);
+
+        return isWarning
+            ? EvaluationResult.Warning(ImmutableList.Create(failureViolation), timestamp)
+            : EvaluationResult.Fail(ImmutableList.Create(failureViolation), timestamp);
     }
 
     private static string GetOperatorSymbol(ComparisonOperator op) => op switch

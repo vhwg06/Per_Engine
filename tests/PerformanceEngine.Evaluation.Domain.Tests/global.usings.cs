@@ -8,3 +8,7 @@ global using FluentAssertions;
 global using Xunit;
 global using PerformanceEngine.Evaluation.Domain.Domain.Evaluation;
 global using PerformanceEngine.Evaluation.Domain.Domain.Rules;
+global using PerformanceEngine.Evaluation.Domain.Application.Services;
+global using PerformanceEngine.Evaluation.Domain.Application.Dto;
+global using PerformanceEngine.Evaluation.Domain.Tests.Domain.Rules;
+global using PerformanceEngine.Metrics.Domain.Metrics;

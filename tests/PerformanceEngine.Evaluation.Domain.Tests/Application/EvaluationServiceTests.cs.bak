@@ -1,0 +1,399 @@
+namespace PerformanceEngine.Evaluation.Domain.Tests.Application;
+
+public class EvaluationServiceTests
+{
+    [Fact]
+    public void Evaluate_ValidMetricAndRule_DelegatesToEvaluator()
+    {
+        // Arrange
+        var service = new EvaluationService();
+        var rule = new ThresholdRule
+        {
+            Id = "service-rule-1",
+            Name = "Service Test Rule",
+            Description = "Test rule for service",
+            AggregationName = "P95",
+            Threshold = 200.0,
+            Operator = ComparisonOperator.LessThan,
+            Severity = Severity.FAIL
+        };
+
+        var metric = TestMetricFactory.CreateMetric("P95", 150.0);
+
+        // Act
+        var result = service.Evaluate(metric, rule);
+
+        // Assert
+        result.Outcome.Should().Be(Severity.PASS);
+        result.Violations.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Evaluate_NullMetric_ReturnsErrorResult()
+    {
+        // Arrange
+        var service = new EvaluationService();
+        var rule = new ThresholdRule
+        {
+            Id = "rule-1",
+            Name = "Test Rule",
+            Description = "Test",
+            AggregationName = "P95",
+            Threshold = 100.0,
+            Operator = ComparisonOperator.LessThan,
+            Severity = Severity.FAIL
+        };
+
+        // Act
+        var result = service.Evaluate(null!, rule);
+
+        // Assert
+        result.Outcome.Should().Be(Severity.FAIL);
+        result.Violations.Should().HaveCount(1);
+        result.Violations[0].Message.Should().Contain("null");
+    }
+
+    [Fact]
+    public void Evaluate_NullRule_ReturnsErrorResult()
+    {
+        // Arrange
+        var service = new EvaluationService();
+        var metric = TestMetricFactory.CreateMetric("P95", 150.0);
+
+        // Act
+        var result = service.Evaluate(metric, null!);
+
+        // Assert
+        result.Outcome.Should().Be(Severity.FAIL);
+        result.Violations.Should().HaveCount(1);
+        result.Violations[0].Message.Should().Contain("null");
+    }
+
+    [Fact]
+    public void Evaluate_RuleViolation_ReturnsFailResult()
+    {
+        // Arrange
+        var service = new EvaluationService();
+        var rule = new ThresholdRule
+        {
+            Id = "error-rate-rule",
+            Name = "Error Rate Check",
+            Description = "Error rate must be less than 1%",
+            AggregationName = "ErrorRate",
+            Threshold = 1.0,
+            Operator = ComparisonOperator.LessThan,
+            Severity = Severity.FAIL
+        };
+
+        var metric = TestMetricFactory.CreateMetric("ErrorRate", 2.5); // Violates rule
+
+        // Act
+        var result = service.Evaluate(metric, rule);
+
+        // Assert
+        result.Outcome.Should().Be(Severity.FAIL);
+        result.Violations.Should().HaveCount(1);
+        result.Violations[0].RuleId.Should().Be("error-rate-rule");
+        result.Violations[0].ActualValue.Should().Be(2.5);
+    }
+
+    [Fact]
+    public void EvaluateBatch_ValidRequest_ReturnsResults()
+    {
+        // Arrange
+        var service = new EvaluationService();
+        
+        var metrics = new[]
+        {
+            TestMetricFactory.CreateMetric("P95", 150.0, "API-1"),
+            TestMetricFactory.CreateMetric("P95", 250.0, "API-2")
+        };
+
+        var rules = new List<IRule>
+        {
+            new ThresholdRule
+            {
+                Id = "p95-rule",
+                Name = "P95 Threshold",
+                Description = "P95 < 200ms",
+                AggregationName = "P95",
+                Threshold = 200.0,
+                Operator = ComparisonOperator.LessThan,
+                Severity = Severity.FAIL
+            }
+        };
+
+        // Act
+        var results = service.EvaluateBatch(metrics, rules).ToList();
+
+        // Assert
+        results.Should().HaveCount(2);
+        results[0].Outcome.Should().Be(Severity.PASS);  // API-1: 150 < 200
+        results[1].Outcome.Should().Be(Severity.FAIL);  // API-2: 250 >= 200
+    }
+
+    [Fact]
+    public void EvaluateBatch_EmptyMetrics_ReturnsEmpty()
+    {
+        // Arrange
+        var service = new EvaluationService();
+        var rules = new List<IRule>
+        {
+            new ThresholdRule
+            {
+                Id = "test-rule",
+                Name = "Test",
+                Description = "Test",
+                AggregationName = "Value",
+                Threshold = 100.0,
+                Operator = ComparisonOperator.LessThan,
+                Severity = Severity.FAIL
+            }
+        };
+
+        // Act
+        var results = service.EvaluateBatch(Array.Empty<IMetric>(), rules);
+
+        // Assert
+        results.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void EvaluateBatch_EmptyRules_ReturnsAllPass()
+    {
+        // Arrange
+        var service = new EvaluationService();
+        var metrics = new[]
+        {
+            TestMetricFactory.CreateMetric("P95", 100.0)
+        };
+
+        // Act
+        var results = service.EvaluateBatch(metrics, Array.Empty<IRule>()).ToList();
+
+        // Assert
+        results.Should().HaveCount(1);
+        results[0].Outcome.Should().Be(Severity.PASS);
+    }
+
+    [Fact]
+    public void EvaluateBatch_NullMetrics_ReturnsEmpty()
+    {
+        // Arrange
+        var service = new EvaluationService();
+        var rules = new List<IRule>
+        {
+            new ThresholdRule
+            {
+                Id = "rule",
+                Name = "Rule",
+                Description = "Rule",
+                AggregationName = "Value",
+                Threshold = 100.0,
+                Operator = ComparisonOperator.LessThan,
+                Severity = Severity.FAIL
+            }
+        };
+
+        // Act
+        var results = service.EvaluateBatch(null!, rules);
+
+        // Assert
+        results.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void EvaluateBatch_NullRules_ReturnsEmpty()
+    {
+        // Arrange
+        var service = new EvaluationService();
+        var metrics = new[]
+        {
+            TestMetricFactory.CreateMetric("P95", 100.0)
+        };
+
+        // Act
+        var results = service.EvaluateBatch(metrics, null!);
+
+        // Assert
+        results.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void EvaluateBatch_MultipleRulesMultipleMetrics_AggregatesCorrectly()
+    {
+        // Arrange
+        var service = new EvaluationService();
+        
+        var metrics = new[]
+        {
+            TestMetricFactory.CreateMetricWithMultipleAggregations(
+                new Dictionary<string, double>
+                {
+                    { "P95", 150.0 },
+                    { "ErrorRate", 0.5 }
+                },
+                "API-Payment"
+            ),
+            TestMetricFactory.CreateMetricWithMultipleAggregations(
+                new Dictionary<string, double>
+                {
+                    { "P95", 250.0 },
+                    { "ErrorRate", 2.0 }
+                },
+                "API-Search"
+            )
+        };
+
+        var rules = new List<IRule>
+        {
+            new ThresholdRule
+            {
+                Id = "p95-rule",
+                Name = "P95 Check",
+                Description = "P95 < 200ms",
+                AggregationName = "P95",
+                Threshold = 200.0,
+                Operator = ComparisonOperator.LessThan,
+                Severity = Severity.FAIL
+            },
+            new ThresholdRule
+            {
+                Id = "error-rule",
+                Name = "Error Check",
+                Description = "Error rate < 1%",
+                AggregationName = "ErrorRate",
+                Threshold = 1.0,
+                Operator = ComparisonOperator.LessThan,
+                Severity = Severity.WARN
+            }
+        };
+
+        // Act
+        var results = service.EvaluateBatch(metrics, rules).ToList();
+
+        // Assert
+        results.Should().HaveCount(2);
+        
+        // API-Payment: P95 pass, ErrorRate pass → PASS
+        results[0].Outcome.Should().Be(Severity.PASS);
+        results[0].Violations.Should().BeEmpty();
+        
+        // API-Search: P95 fail, ErrorRate warn → FAIL (most severe)
+        results[1].Outcome.Should().Be(Severity.FAIL);
+        results[1].Violations.Should().HaveCount(2);
+    }
+
+    [Fact]
+    public void Evaluate_DeterministicBehavior_SameInputsSameOutput()
+    {
+        // Arrange
+        var service = new EvaluationService();
+        var rule = new ThresholdRule
+        {
+            Id = "determinism-test",
+            Name = "Determinism Test",
+            Description = "Test deterministic behavior",
+            AggregationName = "Value",
+            Threshold = 100.0,
+            Operator = ComparisonOperator.LessThan,
+            Severity = Severity.FAIL
+        };
+
+        var metric = TestMetricFactory.CreateMetric("Value", 150.0);
+
+        // Act - Run 50 times
+        var results = Enumerable.Range(0, 50)
+            .Select(_ => service.Evaluate(metric, rule))
+            .ToList();
+
+        // Assert - All results should be identical
+        var first = results.First();
+        results.Should().AllSatisfy(r =>
+        {
+            r.Outcome.Should().Be(first.Outcome);
+            r.Violations.Count.Should().Be(first.Violations.Count);
+            if (r.Violations.Any())
+            {
+                r.Violations[0].ActualValue.Should().Be(first.Violations[0].ActualValue);
+            }
+        });
+    }
+
+    [Fact]
+    public void EvaluateBatch_DifferentInputOrders_ProducesDeterministicResults()
+    {
+        // Arrange
+        var service = new EvaluationService();
+        
+        var metrics1 = new[]
+        {
+            TestMetricFactory.CreateMetric("P95", 100.0, "Metric-A"),
+            TestMetricFactory.CreateMetric("P95", 200.0, "Metric-B"),
+            TestMetricFactory.CreateMetric("P95", 300.0, "Metric-C")
+        };
+
+        var metrics2 = new[]
+        {
+            TestMetricFactory.CreateMetric("P95", 300.0, "Metric-C"),
+            TestMetricFactory.CreateMetric("P95", 100.0, "Metric-A"),
+            TestMetricFactory.CreateMetric("P95", 200.0, "Metric-B")
+        };
+
+        var rule = new ThresholdRule
+        {
+            Id = "rule",
+            Name = "Rule",
+            Description = "Rule",
+            AggregationName = "P95",
+            Threshold = 150.0,
+            Operator = ComparisonOperator.LessThan,
+            Severity = Severity.FAIL
+        };
+
+        // Act
+        var results1 = service.EvaluateBatch(metrics1, new[] { rule }).ToList();
+        var results2 = service.EvaluateBatch(metrics2, new[] { rule }).ToList();
+
+        // Assert - Results should be in same deterministic order
+        results1.Should().HaveCount(3);
+        results2.Should().HaveCount(3);
+        
+        for (int i = 0; i < 3; i++)
+        {
+            results1[i].Outcome.Should().Be(results2[i].Outcome);
+            results1[i].Violations.Count.Should().Be(results2[i].Violations.Count);
+        }
+    }
+
+    [Fact]
+    public void Evaluate_RangeRule_WorksCorrectly()
+    {
+        // Arrange
+        var service = new EvaluationService();
+        var rule = new RangeRule
+        {
+            Id = "range-rule",
+            Name = "Range Check",
+            Description = "Value must be between 10 and 20",
+            AggregationName = "Value",
+            MinBound = 10.0,
+            MaxBound = 20.0,
+            Severity = Severity.FAIL
+        };
+
+        var metricInRange = TestMetricFactory.CreateMetric("Value", 15.0);
+        var metricOutOfRange = TestMetricFactory.CreateMetric("Value", 25.0);
+
+        // Act
+        var resultPass = service.Evaluate(metricInRange, rule);
+        var resultFail = service.Evaluate(metricOutOfRange, rule);
+
+        // Assert
+        resultPass.Outcome.Should().Be(Severity.PASS);
+        resultPass.Violations.Should().BeEmpty();
+        
+        resultFail.Outcome.Should().Be(Severity.FAIL);
+        resultFail.Violations.Should().HaveCount(1);
+    }
+}

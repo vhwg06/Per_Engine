@@ -20,14 +20,14 @@
 
 **Purpose**: Project structure, dependencies, build configuration
 
-- [ ] T001 Create project structure: `src/PerformanceEngine.Profile.Domain/` with subdirectories (Domain/, Application/, Ports/)
-- [ ] T002 [P] Create test project structure: `tests/PerformanceEngine.Profile.Domain.Tests/` with mirrored layout
-- [ ] T003 Create C# project file: `src/PerformanceEngine.Profile.Domain/PerformanceEngine.Profile.Domain.csproj`
-- [ ] T004 [P] Create test project file: `tests/PerformanceEngine.Profile.Domain.Tests/PerformanceEngine.Profile.Domain.Tests.csproj`
-- [ ] T005 [P] Add NuGet dependencies: xUnit, FluentAssertions to both projects
-- [ ] T006 Add project reference from tests → domain
-- [ ] T007 [P] Create global usings file: `src/PerformanceEngine.Profile.Domain/global.usings.cs`
-- [ ] T008 [P] Create build configuration files (.editorconfig, Directory.Build.props)
+- [X] T001 Create project structure: `src/PerformanceEngine.Profile.Domain/` with subdirectories (Domain/, Application/, Ports/)
+- [X] T002 [P] Create test project structure: `tests/PerformanceEngine.Profile.Domain.Tests/` with mirrored layout
+- [X] T003 Create C# project file: `src/PerformanceEngine.Profile.Domain/PerformanceEngine.Profile.Domain.csproj`
+- [X] T004 [P] Create test project file: `tests/PerformanceEngine.Profile.Domain.Tests/PerformanceEngine.Profile.Domain.Tests.csproj`
+- [X] T005 [P] Add NuGet dependencies: xUnit, FluentAssertions to both projects
+- [X] T006 Add project reference from tests → domain
+- [X] T007 [P] Create global usings file: `src/PerformanceEngine.Profile.Domain/global.usings.cs`
+- [X] T008 [P] Create build configuration files (.editorconfig, Directory.Build.props)
 
 ---
 
@@ -39,37 +39,37 @@
 
 ### Base Value Objects & Abstractions
 
-- [ ] T009 Create ConfigKey immutable value object in `src/PerformanceEngine.Profile.Domain/Domain/Configuration/ConfigKey.cs`
+- [X] T009 Create ConfigKey immutable value object in `src/PerformanceEngine.Profile.Domain/Domain/Configuration/ConfigKey.cs`
   - Property: Name (string)
   - Immutable record type
   - Value-based equality
   - Tests: `tests/.../Domain/Configuration/ConfigKeyTests.cs` (equality, null handling)
 
-- [ ] T010 [P] Create ConfigValue immutable value object in `src/PerformanceEngine.Profile.Domain/Domain/Configuration/ConfigValue.cs`
+- [X] T010 [P] Create ConfigValue immutable value object in `src/PerformanceEngine.Profile.Domain/Domain/Configuration/ConfigValue.cs`
   - Properties: Value (object), Type (ConfigType enum)
   - Immutable record type
   - Supports types: String, Int, Duration, Double, Bool
   - Value-based equality
   - Tests: `tests/.../Domain/Configuration/ConfigValueTests.cs` (type validation, equality)
 
-- [ ] T011 [P] Create ConfigType enum in `src/PerformanceEngine.Profile.Domain/Domain/Configuration/ConfigType.cs`
+- [X] T011 [P] Create ConfigType enum in `src/PerformanceEngine.Profile.Domain/Domain/Configuration/ConfigType.cs`
   - Values: String, Int, Duration, Double, Bool
   - Helper methods: `ToConfigType(object value) → ConfigType`
 
-- [ ] T012 Create Profile immutable entity in `src/PerformanceEngine.Profile.Domain/Domain/Profiles/Profile.cs`
+- [X] T012 Create Profile immutable entity in `src/PerformanceEngine.Profile.Domain/Domain/Profiles/Profile.cs`
   - Properties: Scope, Configurations (ImmutableDictionary<ConfigKey, ConfigValue>)
   - Immutable record type
   - Tests: `tests/.../Domain/Profiles/ProfileTests.cs` (immutability, scope property)
 
 ### Scope Interface (Strategy Pattern Foundation)
 
-- [ ] T013 Create Scope interface in `src/PerformanceEngine.Profile.Domain/Domain/Scopes/IScope.cs`
+- [X] T013 Create Scope interface in `src/PerformanceEngine.Profile.Domain/Domain/Scopes/IScope.cs`
   - Properties: Id, Type, Precedence (int), Description
   - Method: `CompareTo(IScope other) → int` (for ordering)
   - Must support comparison and equality (`Equals`, `GetHashCode`)
   - Document: "All scope types must implement this contract"
 
-- [ ] T014 Create ConflictHandler domain service in `src/PerformanceEngine.Profile.Domain/Domain/Configuration/ConflictHandler.cs`
+- [X] T014 Create ConflictHandler domain service in `src/PerformanceEngine.Profile.Domain/Domain/Configuration/ConflictHandler.cs`
   - Method: `DetectConflicts(IEnumerable<Profile> profiles) → List<ConfigurationConflictException>`
   - Logic: Two profiles at same scope with different values for same key = conflict
   - Tests: `tests/.../Domain/Configuration/ConflictHandlerTests.cs` (conflict detection, error messages)
@@ -89,29 +89,29 @@
 
 ### Implementation for US1
 
-- [ ] T015 [P] [US1] Create GlobalScope implementation in `src/PerformanceEngine.Profile.Domain/Domain/Scopes/GlobalScope.cs`
+- [X] T015 [P] [US1] Create GlobalScope implementation in `src/PerformanceEngine.Profile.Domain/Domain/Scopes/GlobalScope.cs`
   - Precedence: 0 (lowest)
   - Type: "Global"
   - Singleton instance
   - Tests: `tests/.../Domain/Scopes/GlobalScopeTests.cs` (precedence, equality)
 
-- [ ] T016 [P] [US1] Create ResolvedProfile immutable entity in `src/PerformanceEngine.Profile.Domain/Domain/Profiles/ResolvedProfile.cs`
+- [X] T016 [P] [US1] Create ResolvedProfile immutable entity in `src/PerformanceEngine.Profile.Domain/Domain/Profiles/ResolvedProfile.cs`
   - Properties: Configuration (ImmutableDictionary<ConfigKey, ConfigValue>), AuditTrail (ImmutableDictionary<ConfigKey, ImmutableList<IScope>>), ResolvedAt (DateTime)
   - Immutable record type
   - Tests: `tests/.../Domain/Profiles/ResolvedProfileTests.cs` (immutability, audit trail)
 
-- [ ] T017 [US1] Create ProfileResolver domain service in `src/PerformanceEngine.Profile.Domain/Domain/Profiles/ProfileResolver.cs`
+- [X] T017 [US1] Create ProfileResolver domain service in `src/PerformanceEngine.Profile.Domain/Domain/Profiles/ProfileResolver.cs`
   - Method: `Resolve(IEnumerable<Profile> profiles, IScope requestedScope) → ResolvedProfile`
   - Logic: Global profile applies to all scopes; if requested scope matches, merge values (requested scope wins)
   - Pure function: no side effects, deterministic output
   - Tests: `tests/.../Domain/Profiles/ProfileResolverTests.cs` (global scope resolution, override behavior)
 
-- [ ] T018 [US1] Create ProfileService application facade in `src/PerformanceEngine.Profile.Domain/Application/Services/ProfileService.cs`
+- [X] T018 [US1] Create ProfileService application facade in `src/PerformanceEngine.Profile.Domain/Application/Services/ProfileService.cs`
   - Method: `Resolve(IEnumerable<Profile> profiles, IScope scope) → ResolvedProfile`
   - Error handling: ConflictHandler integration; fail-fast on conflicts
   - Tests: `tests/.../Application/ProfileServiceTests.cs` (end-to-end resolution)
 
-- [ ] T019 [US1] Create DTOs in `src/PerformanceEngine.Profile.Domain/Application/Dto/`
+- [X] T019 [US1] Create DTOs in `src/PerformanceEngine.Profile.Domain/Application/Dto/`
   - `ProfileDto.cs` (serializable profile)
   - `ResolvedProfileDto.cs` (serializable result with audit trail)
   - `ConfigKeyDto.cs`, `ConfigValueDto.cs`
@@ -135,36 +135,36 @@
 
 ### Implementation for US2
 
-- [ ] T020 [P] [US2] Create ApiScope implementation in `src/PerformanceEngine.Profile.Domain/Domain/Scopes/ApiScope.cs`
+- [X] T020 [P] [US2] Create ApiScope implementation in `src/PerformanceEngine.Profile.Domain/Domain/Scopes/ApiScope.cs`
   - Properties: ApiName
   - Precedence: 10 (higher than Global)
   - Type: "Api"
   - Tests: `tests/.../Domain/Scopes/ApiScopeTests.cs` (precedence, equality, api name)
 
-- [ ] T021 [P] [US2] Create EnvironmentScope implementation in `src/PerformanceEngine.Profile.Domain/Domain/Scopes/EnvironmentScope.cs`
+- [X] T021 [P] [US2] Create EnvironmentScope implementation in `src/PerformanceEngine.Profile.Domain/Domain/Scopes/EnvironmentScope.cs`
   - Properties: EnvironmentName (prod, staging, dev)
   - Precedence: 15 (higher than Global, slightly higher than Api)
   - Type: "Environment"
   - Tests: `tests/.../Domain/Scopes/EnvironmentScopeTests.cs`
 
-- [ ] T022 [US2] Extend ProfileResolver to handle scope hierarchy in `src/PerformanceEngine.Profile.Domain/Domain/Profiles/ProfileResolver.cs`
+- [X] T022 [US2] Extend ProfileResolver to handle scope hierarchy in `src/PerformanceEngine.Profile.Domain/Domain/Profiles/ProfileResolver.cs`
   - Update: `Resolve()` logic to handle scope precedence
   - Logic: For each config key, find highest-precedence profile that defines it
   - Deterministic ordering: if multiple profiles at same precedence with same key = conflict
   - Tests: `tests/.../Domain/Profiles/ScopeHierarchyTests.cs` (precedence ordering, partial overrides)
 
-- [ ] T023 [US2] Create ResolveProfileUseCase in `src/PerformanceEngine.Profile.Domain/Application/UseCases/ResolveProfileUseCase.cs`
+- [X] T023 [US2] Create ResolveProfileUseCase in `src/PerformanceEngine.Profile.Domain/Application/UseCases/ResolveProfileUseCase.cs`
   - Input: profiles collection + requested scope
   - Output: ResolvedProfile with audit trail
   - Error handling: catch conflicts, throw clear exception
   - Tests: `tests/.../Application/UseCases/ResolveProfileUseCaseTests.cs`
 
-- [ ] T024 [US2] Extend ProfileService facade with conflict detection in `src/PerformanceEngine.Profile.Domain/Application/Services/ProfileService.cs`
+- [X] T024 [US2] Extend ProfileService facade with conflict detection in `src/PerformanceEngine.Profile.Domain/Application/Services/ProfileService.cs`
   - Method: `Resolve()` calls ConflictHandler before resolution
   - Fail-fast: throw ConfigurationConflictException if conflicts found
   - Tests: `tests/.../Application/ProfileServiceConflictTests.cs`
 
-- [ ] T025 [P] [US2] Create determinism tests for scope resolution in `tests/PerformanceEngine.Profile.Domain.Tests/Domain/Profiles/DeterminismTests.cs`
+- [X] T025 [P] [US2] Create determinism tests for scope resolution in `tests/PerformanceEngine.Profile.Domain.Tests/Domain/Profiles/DeterminismTests.cs`
   - Test: 1000 consecutive resolutions produce identical results
   - Test: Identical profile sets in different orders produce identical results
   - Test: Serialization byte-identical across runs
@@ -186,28 +186,28 @@
 
 ### Implementation for US3
 
-- [ ] T026 [P] [US3] Create CompositeScope for multi-dimensional contexts in `src/PerformanceEngine.Profile.Domain/Domain/Scopes/CompositeScope.cs`
+- [X] T026 [P] [US3] Create CompositeScope for multi-dimensional contexts in `src/PerformanceEngine.Profile.Domain/Domain/Scopes/CompositeScope.cs`
   - Properties: BaseScopeA, BaseScopeB (composition of two scopes)
   - Precedence: calculated as max(scopeA.precedence, scopeB.precedence) + 5
   - Type: Composite
   - Tests: `tests/.../Domain/Scopes/CompositeScopeTests.cs`
 
-- [ ] T027 [P] [US3] Create TagScope implementation in `src/PerformanceEngine.Profile.Domain/Domain/Scopes/TagScope.cs`
+- [X] T027 [P] [US3] Create TagScope implementation in `src/PerformanceEngine.Profile.Domain/Domain/Scopes/TagScope.cs`
   - Properties: TagName
   - Precedence: 20 (configurable)
   - Type: "Tag"
   - Tests: `tests/.../Domain/Scopes/TagScopeTests.cs`
 
-- [ ] T028 [US3] Create MultiDimensionalResolution tests in `tests/PerformanceEngine.Profile.Domain.Tests/Domain/Profiles/MultiDimensionalTests.cs`
+- [X] T028 [US3] Create MultiDimensionalResolution tests in `tests/PerformanceEngine.Profile.Domain.Tests/Domain/Profiles/MultiDimensionalTests.cs`
   - Test: Global + Env + API + Tag combinations
   - Test: Verify precedence ordering is correct (most specific wins)
   - Test: Determinism across different resolution orders
 
-- [ ] T029 [US3] Create ScopeComparison utility in `src/PerformanceEngine.Profile.Domain/Domain/Scopes/ScopeComparison.cs`
+- [X] T029 [US3] Create ScopeComparison utility in `src/PerformanceEngine.Profile.Domain/Domain/Scopes/ScopeComparison.cs`
   - Helper methods: `IsMostSpecific(scope, otherScopes)`, `RankByPrecedence(scopes)`
   - Tests: `tests/.../Domain/Scopes/ScopeComparisonTests.cs`
 
-- [ ] T030 [US3] Create comprehensive scope hierarchy documentation in `docs/SCOPE_HIERARCHY.md`
+- [X] T030 [US3] Create comprehensive scope hierarchy documentation in `docs/SCOPE_HIERARCHY.md`
   - Precedence rules: Global < Api < Env < Tag < Composite(Api+Env)
   - Examples: Different dimension combinations
   - How conflicts are detected
@@ -228,24 +228,24 @@
 
 ### Implementation for US4
 
-- [ ] T031 [P] [US4] Create CustomPaymentMethodScope example in `tests/PerformanceEngine.Profile.Domain.Tests/Domain/Scopes/CustomScopeTests.cs`
+- [X] T031 [P] [US4] Create CustomPaymentMethodScope example in `tests/PerformanceEngine.Profile.Domain.Tests/Domain/Scopes/CustomScopeTests.cs`
   - Implements IScope
   - PaymentMethod-specific configuration (visa, mastercard, paypal)
   - Demonstrates extensibility without core changes
   - Not in production code; example for documentation
 
-- [ ] T032 [US4] Create ScopeFactory utility in `src/PerformanceEngine.Profile.Domain/Domain/Scopes/ScopeFactory.cs`
+- [X] T032 [US4] Create ScopeFactory utility in `src/PerformanceEngine.Profile.Domain/Domain/Scopes/ScopeFactory.cs`
   - Static methods for creating built-in scope types
   - Document: "Custom scopes can be instantiated directly by application code"
   - Tests: `tests/.../Domain/Scopes/ScopeFactoryTests.cs`
 
-- [ ] T033 [P] [US4] Create scope extension documentation in `docs/CUSTOM_SCOPES.md`
+- [X] T033 [P] [US4] Create scope extension documentation in `docs/CUSTOM_SCOPES.md`
   - How to implement IScope interface
   - Precedence selection guidelines
   - Example: CustomPaymentMethodScope walkthrough
   - How to register with ProfileResolver
 
-- [ ] T034 [US4] Create ScopeRegistry for runtime scope registration in `src/PerformanceEngine.Profile.Domain/Application/Services/ScopeRegistry.cs`
+- [X] T034 [US4] Create ScopeRegistry for runtime scope registration in `src/PerformanceEngine.Profile.Domain/Application/Services/ScopeRegistry.cs`
   - Allow registration of custom scopes at runtime
   - Query: `GetScopeByType(string type) → IScope`
   - Tests: `tests/.../Application/ScopeRegistryTests.cs`
@@ -258,35 +258,35 @@
 
 **Purpose**: Comprehensive testing across all user stories and determinism guarantees
 
-- [ ] T035 [P] Create determinism test harness in `tests/PerformanceEngine.Profile.Domain.Tests/Determinism/DeterminismTestBase.cs`
+- [X] T035 [P] Create determinism test harness in `tests/PerformanceEngine.Profile.Domain.Tests/Determinism/DeterminismTestBase.cs`
   - Base class for running operation 1000+ times
   - Serialize result each time
   - Assert all serializations byte-identical
 
-- [ ] T036 Create complex scenario tests in `tests/PerformanceEngine.Profile.Domain.Tests/Domain/Profiles/ComplexResolutionTests.cs`
+- [X] T036 Create complex scenario tests in `tests/PerformanceEngine.Profile.Domain.Tests/Domain/Profiles/ComplexResolutionTests.cs`
   - 10+ scopes with varying precedence
   - Multiple profiles per scope
   - Verify deterministic resolution across different orderings
   - Verify audit trail accuracy
 
-- [ ] T037 [P] Create conflict detection comprehensive tests in `tests/PerformanceEngine.Profile.Domain.Tests/Domain/Configuration/ConflictDetectionTests.cs`
+- [X] T037 [P] Create conflict detection comprehensive tests in `tests/PerformanceEngine.Profile.Domain.Tests/Domain/Configuration/ConflictDetectionTests.cs`
   - Illegal conflicts caught (same scope, different values)
   - Clear error messages
   - All conflict types covered
 
-- [ ] T038 Create integration tests in `tests/PerformanceEngine.Profile.Domain.Tests/Integration/ProfileServiceIntegrationTests.cs`
+- [X] T038 Create integration tests in `tests/PerformanceEngine.Profile.Domain.Tests/Integration/ProfileServiceIntegrationTests.cs`
   - Full resolution pipeline with conflict handling
   - End-to-end scenario: create profiles, resolve, verify audit trail
   - Error handling verification
 
-- [ ] T039 [P] Create architecture compliance tests in `tests/PerformanceEngine.Profile.Domain.Tests/Architecture/ArchitectureTests.cs`
+- [X] T039 [P] Create architecture compliance tests in `tests/PerformanceEngine.Profile.Domain.Tests/Architecture/ArchitectureTests.cs`
   - Verify no file I/O in domain layer
   - Verify no environment variable access in domain layer
   - Verify immutability of ResolvedProfile and ConfigValue
   - Verify IScope interface implemented by all scope types
   - Verify no non-deterministic code (DateTime.Now, Random)
 
-- [ ] T040 Create edge case tests in `tests/PerformanceEngine.Profile.Domain.Tests/Domain/EdgeCaseTests.cs`
+- [X] T040 Create edge case tests in `tests/PerformanceEngine.Profile.Domain.Tests/Domain/EdgeCaseTests.cs`
   - Null scopes/profiles
   - Empty configuration dictionaries
   - Scope with infinite precedence
@@ -301,26 +301,26 @@
 
 **Purpose**: Developer guides and API documentation
 
-- [ ] T041 Create README.md in `src/PerformanceEngine.Profile.Domain/README.md`
+- [X] T041 Create README.md in `src/PerformanceEngine.Profile.Domain/README.md`
   - Architecture overview
   - Quick start: resolve global profile
   - Built-in scope types (Global, Api, Environment, Tag)
   - Extension guide (custom scopes)
 
-- [ ] T042 Create IMPLEMENTATION_GUIDE.md in `src/PerformanceEngine.Profile.Domain/IMPLEMENTATION_GUIDE.md`
+- [X] T042 Create IMPLEMENTATION_GUIDE.md in `src/PerformanceEngine.Profile.Domain/IMPLEMENTATION_GUIDE.md`
   - Step-by-step walkthrough (similar to Metrics Domain)
   - Code examples for each scope type
   - Scope precedence rules
   - Conflict detection and handling
   - Testing strategy
 
-- [ ] T043 Create quickstart.md in `specs/profile-domain/quickstart.md`
+- [X] T043 Create quickstart.md in `specs/profile-domain/quickstart.md`
   - Setup: clone, build, run tests
   - Basic resolution example
   - Custom scope template
   - Testing your code
 
-- [ ] T044 [P] Create API documentation in `specs/profile-domain/contracts/`
+- [X] T044 [P] Create API documentation in `specs/profile-domain/contracts/`
   - `scope-interface.md` (IScope contract)
   - `resolver-interface.md` (ProfileResolver contract)
   - `resolved-profile.md` (ResolvedProfile contract)
@@ -334,13 +334,13 @@
 
 **Purpose**: Refinements affecting the entire domain
 
-- [ ] T045 Code review: Domain layer for DDD compliance
-- [ ] T046 Code review: Application layer for clean architecture
-- [ ] T047 [P] Performance profiling: Resolve 100-key config over 10 dimensions, verify <5ms
-- [ ] T048 [P] Code cleanup: Remove dead code, unused usings
+- [X] T045 Code review: Domain layer for DDD compliance
+- [X] T046 Code review: Application layer for clean architecture
+- [X] T047 [P] Performance profiling: Resolve 100-key config over 10 dimensions, verify <5ms
+- [X] T048 [P] Code cleanup: Remove dead code, unused usings
 - [ ] T049 Add XML documentation comments to all public APIs
-- [ ] T050 Update main README.md with Profile Domain status
-- [ ] T051 Run full test suite, verify all green
+- [X] T050 Update main README.md with Profile Domain status
+- [X] T051 Run full test suite, verify all green
 - [ ] T052 Validate against Constitution v1.0.0 compliance checklist
 
 ---

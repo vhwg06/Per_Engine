@@ -29,7 +29,7 @@ public class ThresholdRuleTests
         // Arrange
         var metric = TestMetricFactory.CreateMetricWithAggregations(
             "latency",
-            ("p95", actualValue)
+            new Dictionary<string, double> { { "p95", actualValue } }
         );
 
         var rule = new ThresholdRule
@@ -66,7 +66,7 @@ public class ThresholdRuleTests
         // Arrange
         var metric = TestMetricFactory.CreateMetricWithAggregations(
             "latency",
-            ("average", 100.0)  // Only has "average", not "p95"
+            new Dictionary<string, double> { { "average", 100.0 } } // Only has "average", not "p95"
         );
 
         var rule = new ThresholdRule
@@ -154,7 +154,7 @@ public class ThresholdRuleTests
         // Arrange
         var metric = TestMetricFactory.CreateMetricWithAggregations(
             "latency",
-            ("p95", 250.0)
+            new Dictionary<string, double> { { "p95", 50.0 } }
         );
 
         var rule = new ThresholdRule

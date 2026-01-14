@@ -7,31 +7,41 @@ namespace PerformanceEngine.Evaluation.Domain.Tests.Domain.Rules;
 /// </summary>
 public static class TestMetricFactory
 {
+    private static readonly Metrics.Domain.Metrics.ExecutionContext _context = new(
+        engineName: "test-engine",
+        executionId: Guid.NewGuid(),
+        scenarioName: "test-scenario"
+    );
+
     /// <summary>
     /// Creates a simple metric with specified aggregation results.
     /// </summary>
     public static Metric CreateMetricWithAggregations(
         string metricType,
-        params (string operationName, double valueMs)[] aggregations)
+        Dictionary<string, double> aggregations)
     {
         // Create a sample to satisfy metric requirements
         var sample = new Sample(
-            latency: new Latency(100, LatencyUnit.Milliseconds),
+            timestamp: DateTime.UtcNow.AddSeconds(-1),
+            duration: new Latency(100, LatencyUnit.Milliseconds),
             status: SampleStatus.Success,
-            timestamp: DateTime.UtcNow,
-            executionContext: new ExecutionContext("test", "test", "test", "test")
+            errorClassification: null,
+            executionContext: _context
         );
 
-        var sampleCollection = new SampleCollection(new[] { sample });
-        var window = new AggregationWindow(DateTime.UtcNow.AddMinutes(-5), DateTime.UtcNow);
+        var sampleCollection = SampleCollection.Create(new[] { sample });
+        var window = AggregationWindow.FullExecution();
 
-        var aggregationResults = aggregations.Select(a =>
-            new AggregationResult(
-                value: new Latency(a.valueMs, LatencyUnit.Milliseconds),
-                operationName: a.operationName,
+        var aggregationResults = aggregations.Select(kvp =>
+        {
+            // Latency value objects disallow negatives; clamp for test scenarios that use generic metrics
+            var safeValue = Math.Max(kvp.Value, 0);
+            return new AggregationResult(
+                value: new Latency(safeValue, LatencyUnit.Milliseconds),
+                operationName: kvp.Key,
                 computedAt: DateTime.UtcNow
-            )
-        ).ToList();
+            );
+        }).ToList();
 
         return new Metric(
             samples: sampleCollection,
@@ -40,5 +50,29 @@ public static class TestMetricFactory
             aggregatedValues: aggregationResults,
             computedAt: DateTime.UtcNow
         );
+    }
+
+    /// <summary>
+    /// Creates a metric with a single aggregation (convenience method).
+    /// </summary>
+    public static Metric CreateMetric(
+        string aggregationName,
+        double aggregationValue,
+        string metricType = "TestMetric")
+    {
+        return CreateMetricWithAggregations(
+            metricType,
+            new Dictionary<string, double> { { aggregationName, aggregationValue } }
+        );
+    }
+
+    /// <summary>
+    /// Creates a metric with multiple aggregations (for batch testing).
+    /// </summary>
+    public static Metric CreateMetricWithMultipleAggregations(
+        Dictionary<string, double> aggregations,
+        string metricType = "TestMetric")
+    {
+        return CreateMetricWithAggregations(metricType, aggregations);
     }
 }

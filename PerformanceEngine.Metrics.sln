@@ -15,6 +15,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9479A70C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceEngine.Evaluation.Domain.Tests", "tests\PerformanceEngine.Evaluation.Domain.Tests\PerformanceEngine.Evaluation.Domain.Tests.csproj", "{0C2DE014-DE4F-4F3F-BADF-47FCA4936872}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceEngine.Profile.Domain", "src\PerformanceEngine.Profile.Domain\PerformanceEngine.Profile.Domain.csproj", "{07047206-234A-4DEF-95B4-4949BDA8CD6D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceEngine.Profile.Domain.Tests", "tests\PerformanceEngine.Profile.Domain.Tests\PerformanceEngine.Profile.Domain.Tests.csproj", "{79A1FB92-539F-437D-B8A1-5A56949A5BA5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,9 +41,19 @@ Global
 		{0C2DE014-DE4F-4F3F-BADF-47FCA4936872}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C2DE014-DE4F-4F3F-BADF-47FCA4936872}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C2DE014-DE4F-4F3F-BADF-47FCA4936872}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07047206-234A-4DEF-95B4-4949BDA8CD6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07047206-234A-4DEF-95B4-4949BDA8CD6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07047206-234A-4DEF-95B4-4949BDA8CD6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07047206-234A-4DEF-95B4-4949BDA8CD6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79A1FB92-539F-437D-B8A1-5A56949A5BA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79A1FB92-539F-437D-B8A1-5A56949A5BA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79A1FB92-539F-437D-B8A1-5A56949A5BA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79A1FB92-539F-437D-B8A1-5A56949A5BA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6D13E5CF-EEB3-4BA6-9566-FD3CD8944F85} = {F553D058-E0C6-4097-9114-F96B5C58DF81}
 		{0C2DE014-DE4F-4F3F-BADF-47FCA4936872} = {9479A70C-3983-4B98-A3B8-D47D818E3D1E}
+		{07047206-234A-4DEF-95B4-4949BDA8CD6D} = {F553D058-E0C6-4097-9114-F96B5C58DF81}
+		{79A1FB92-539F-437D-B8A1-5A56949A5BA5} = {9479A70C-3983-4B98-A3B8-D47D818E3D1E}
 	EndGlobalSection
 EndGlobal

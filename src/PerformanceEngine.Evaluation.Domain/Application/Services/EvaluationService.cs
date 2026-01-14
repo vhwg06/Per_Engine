@@ -128,7 +128,12 @@ public sealed class EvaluationService
             return Enumerable.Empty<EvaluationResult>();
         }
 
-        if (rules == null || !rules.Any())
+        if (rules == null)
+        {
+            return Enumerable.Empty<EvaluationResult>();
+        }
+
+        if (!rules.Any())
         {
             return metrics.Select(_ => EvaluationResult.Pass(DateTime.UtcNow));
         }
