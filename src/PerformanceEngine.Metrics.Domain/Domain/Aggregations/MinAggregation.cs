@@ -47,7 +47,7 @@ public sealed class MinAggregation : IAggregationOperation
         }
 
         return new AggregationResult(
-            minMs,
+            new Latency((double)minMs, LatencyUnit.Milliseconds),
             OperationName,
             DateTime.UtcNow);
     }

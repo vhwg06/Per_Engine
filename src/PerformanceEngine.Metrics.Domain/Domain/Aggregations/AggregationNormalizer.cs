@@ -28,17 +28,22 @@ public sealed class AggregationNormalizer
         {
             var convertedLatency = sample.Duration.ConvertTo(targetUnit);
             
+            // Convert IReadOnlyDictionary to Dictionary for Sample constructor
+            var metadataDict = sample.Metadata != null 
+                ? new Dictionary<string, object>(sample.Metadata)
+                : null;
+            
             var normalizedSample = new Sample(
                 sample.Timestamp,
                 convertedLatency,
                 sample.Status,
                 sample.ErrorClassification,
                 sample.ExecutionContext,
-                sample.Metadata);
+                metadataDict);
 
             normalized.Add(normalizedSample);
         }
 
-        return new SampleCollection(normalized.ToImmutable());
+        return SampleCollection.Create(normalized.ToImmutable());
     }
 }

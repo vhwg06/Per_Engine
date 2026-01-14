@@ -22,8 +22,7 @@ public class DeterminismContract
         var result2 = aggregation.Aggregate(samples, _fullWindow);
 
         // Assert - exact equality, not approximate
-        result1.Value.Should().Be(result2.Value);
-        result1.Value.Should().Be(result1.Value); // Verify same instance
+        result1.Value.Value.Should().Be(result2.Value.Value);
     }
 
     [Fact]
@@ -39,7 +38,7 @@ public class DeterminismContract
         var result2 = aggregation.Aggregate(samples, _fullWindow);
 
         // Assert - exact equality
-        result1.Value.Should().Be(result2.Value);
+        result1.Value.Value.Should().Be(result2.Value.Value);
     }
 
     [Fact]
@@ -54,7 +53,7 @@ public class DeterminismContract
         var result2 = aggregation.Aggregate(samples, _fullWindow);
 
         // Assert
-        result1.Value.Should().Be(result2.Value);
+        result1.Value.Value.Should().Be(result2.Value.Value);
     }
 
     [Fact]
@@ -69,7 +68,7 @@ public class DeterminismContract
         var result2 = aggregation.Aggregate(samples, _fullWindow);
 
         // Assert
-        result1.Value.Should().Be(result2.Value);
+        result1.Value.Value.Should().Be(result2.Value.Value);
     }
 
     [Fact]
@@ -93,7 +92,7 @@ public class DeterminismContract
             var result1 = aggregation.Aggregate(largeDataset, _fullWindow);
             var result2 = aggregation.Aggregate(largeDataset, _fullWindow);
 
-            result1.Value.Should().Be(result2.Value, 
+            result1.Value.Value.Should().Be(result2.Value.Value, 
                 because: $"{aggregation.OperationName} should produce identical results");
         }
     }
@@ -109,7 +108,7 @@ public class DeterminismContract
         var avg2 = new AverageAggregation().Aggregate(samples, _fullWindow);
 
         // Assert - different instances, same results
-        avg1.Value.Should().Be(avg2.Value);
+        avg1.Value.Value.Should().Be(avg2.Value.Value);
     }
 
     [Fact]
@@ -126,7 +125,7 @@ public class DeterminismContract
         var result2 = aggregation.Aggregate(samples2, _fullWindow);
 
         // Assert
-        result1.Value.Should().Be(result2.Value);
+        result1.Value.Value.Should().Be(result2.Value.Value);
     }
 
     private SampleCollection CreateFixedSamples(int count)
@@ -151,7 +150,8 @@ public class DeterminismContract
         var samples = new SampleCollection();
         for (int i = 1; i <= count; i++)
         {
-            var unit = i % 3 switch
+            var unitChoice = i % 3;
+            var unit = unitChoice switch
             {
                 0 => LatencyUnit.Nanoseconds,
                 1 => LatencyUnit.Milliseconds,

@@ -48,7 +48,7 @@ public sealed class AverageAggregation : IAggregationOperation
         var averageMs = totalMilliseconds / normalizedSnapshot.Count;
 
         return new AggregationResult(
-            averageMs,
+            new Latency((double)averageMs, LatencyUnit.Milliseconds),
             OperationName,
             DateTime.UtcNow);
     }

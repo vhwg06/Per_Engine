@@ -47,7 +47,7 @@ public sealed class MaxAggregation : IAggregationOperation
         }
 
         return new AggregationResult(
-            maxMs,
+            new Latency((double)maxMs, LatencyUnit.Milliseconds),
             OperationName,
             DateTime.UtcNow);
     }

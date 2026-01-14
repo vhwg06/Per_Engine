@@ -23,7 +23,7 @@ public class ReproducibilityTests
         var run2Result = aggregation.Aggregate(run2Samples, _fullWindow);
 
         // Assert - bit-for-bit exact match
-        run1Result.Value.Should().Be(run2Result.Value);
+        run1Result.Value.Value.Should().Be(run2Result.Value.Value);
     }
 
     [Fact]
@@ -38,7 +38,7 @@ public class ReproducibilityTests
         var run2Result = aggregation.Aggregate(run2Samples, _fullWindow);
 
         // Assert
-        run1Result.Value.Should().Be(run2Result.Value);
+        run1Result.Value.Value.Should().Be(run2Result.Value.Value);
     }
 
     [Fact]
@@ -53,7 +53,7 @@ public class ReproducibilityTests
         var run2Result = aggregation.Aggregate(run2Samples, _fullWindow);
 
         // Assert
-        run1Result.Value.Should().Be(run2Result.Value);
+        run1Result.Value.Value.Should().Be(run2Result.Value.Value);
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class ReproducibilityTests
         var run2Result = aggregation.Aggregate(run2Samples, _fullWindow);
 
         // Assert
-        run1Result.Value.Should().Be(run2Result.Value);
+        run1Result.Value.Value.Should().Be(run2Result.Value.Value);
     }
 
     [Fact]
@@ -96,7 +96,7 @@ public class ReproducibilityTests
             var run1Result = aggregation.Aggregate(run1Samples, _fullWindow);
             var run2Result = aggregation.Aggregate(run2Samples, _fullWindow);
 
-            run1Result.Value.Should().Be(run2Result.Value, 
+            run1Result.Value.Value.Should().Be(run2Result.Value.Value, 
                 because: $"{name} should produce reproducible results with fixed seed");
         }
     }
@@ -116,7 +116,7 @@ public class ReproducibilityTests
         var result2 = aggregation.Aggregate(seed2Samples, _fullWindow);
 
         // Assert - different seeds should produce different results (with high probability)
-        result1.Value.Should().NotBe(result2.Value);
+        result1.Value.Value.Should().NotBe(result2.Value.Value);
     }
 
     private SampleCollection GeneratePseudoRandomSamples(int seed, int count)

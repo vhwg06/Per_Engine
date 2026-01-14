@@ -62,19 +62,6 @@ public sealed class PercentileAggregation : IAggregationOperation
         var percentileValue = _percentile.Value;
         var n = sortedLatencies.Count;
         
-        // Handle edge cases
-        if (percentileValue == 0)
-        {
-            // p0 is minimum
-            return new AggregationResult(sortedLatencies[0], OperationName, DateTime.UtcNow);
-        }
-
-        if (percentileValue == 100)
-        {
-            // p100 is maximum
-            return new AggregationResult(sortedLatencies[n - 1], OperationName, DateTime.UtcNow);
-        }
-
         // Nearest-rank algorithm: rank = ceil(percentile/100 * count)
         var rank = (int)Math.Ceiling(percentileValue / 100.0 * n);
         
@@ -86,8 +73,9 @@ public sealed class PercentileAggregation : IAggregationOperation
         var percentileLatency = sortedLatencies[index];
 
         return new AggregationResult(
-            percentileLatency,
+            new Latency((double)percentileLatency, LatencyUnit.Milliseconds),
             OperationName,
             DateTime.UtcNow);
     }
 }
+

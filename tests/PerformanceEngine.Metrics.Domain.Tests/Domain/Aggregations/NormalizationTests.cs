@@ -78,10 +78,10 @@ public class NormalizationTests
     public void NormalizeSamples_PreservesMetadata()
     {
         // Arrange
-        var metadata = new Dictionary<string, string> 
+        var metadata = new Dictionary<string, object> 
         { 
-            { "scenario", "load-test" },
-            { "region", "us-east-1" }
+            { "scenario", (object)"load-test" },
+            { "region", (object)"us-east-1" }
         };
         
         var sample = new Sample(
@@ -99,8 +99,10 @@ public class NormalizationTests
 
         // Assert
         normalizedSnapshot[0].Metadata.Should().NotBeNull();
-        normalizedSnapshot[0].Metadata.Should().ContainKey("scenario").WithValue("load-test");
-        normalizedSnapshot[0].Metadata.Should().ContainKey("region").WithValue("us-east-1");
+        normalizedSnapshot[0].Metadata.Should().ContainKey("scenario");
+        normalizedSnapshot[0].Metadata.Should().ContainKey("region");
+        normalizedSnapshot[0].Metadata!["scenario"].Should().Be("load-test");
+        normalizedSnapshot[0].Metadata!["region"].Should().Be("us-east-1");
     }
 
     [Fact]

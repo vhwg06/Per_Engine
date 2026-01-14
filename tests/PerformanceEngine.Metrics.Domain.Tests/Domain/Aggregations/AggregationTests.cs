@@ -41,7 +41,7 @@ public class AggregationTests
         var result = aggregation.Aggregate(samples, _fullWindow);
 
         // Assert
-        result.Value.Should().Be(100M);
+        result.Value.Value.Should().Be(100.0);
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public class AggregationTests
         var result = aggregation.Aggregate(samples, _fullWindow);
 
         // Assert
-        result.Value.Should().Be(62.5M); // (25+50+75+100)/4 = 62.5
+        result.Value.Value.Should().Be(62.5); // (25+50+75+100)/4 = 62.5
     }
 
     [Fact]
@@ -87,7 +87,7 @@ public class AggregationTests
         var result = aggregation.Aggregate(samples, _fullWindow);
 
         // Assert
-        result.Value.Should().Be(42M);
+        result.Value.Value.Should().Be(42.0);
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public class AggregationTests
         var result = aggregation.Aggregate(samples, _fullWindow);
 
         // Assert
-        result.Value.Should().Be(100M);
+        result.Value.Value.Should().Be(100.0);
     }
 
     [Fact]
@@ -134,7 +134,7 @@ public class AggregationTests
         var result = aggregation.Aggregate(samples, _fullWindow);
 
         // Assert
-        result.Value.Should().Be(42M);
+        result.Value.Value.Should().Be(42.0);
     }
 
     [Fact]
@@ -160,7 +160,7 @@ public class AggregationTests
         var result = aggregation.Aggregate(samples, _fullWindow);
 
         // Assert
-        result.Value.Should().Be(5M);
+        result.Value.Value.Should().Be(5.0);
     }
 
     [Theory]
@@ -190,11 +190,11 @@ public class AggregationTests
 
         // Assert
         if (percentile == 0)
-            result.Value.Should().Be(1M); // minimum
+            result.Value.Value.Should().Be(1.0); // minimum
         else if (percentile == 100)
-            result.Value.Should().Be(100M); // maximum
+            result.Value.Value.Should().Be(100.0); // maximum
         else if (percentile == 50)
-            result.Value.Should().Be(50M); // median of 1-100
+            result.Value.Value.Should().Be(50.0); // median of 1-100
     }
 
     [Fact]
@@ -220,7 +220,7 @@ public class AggregationTests
         var result = aggregation.Aggregate(samples, _fullWindow);
 
         // Assert
-        result.Value.Should().Be(42M); // All values are 42
+        result.Value.Value.Should().Be(42.0); // All values are 42
     }
 
     [Fact]

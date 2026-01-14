@@ -26,7 +26,15 @@ public sealed class SampleCollection
     /// <summary>
     /// Creates a new empty sample collection
     /// </summary>
-    public static SampleCollection Empty => new(ImmutableList<Sample>.Empty);
+    public SampleCollection()
+    {
+        _samples = ImmutableList<Sample>.Empty;
+    }
+
+    /// <summary>
+    /// Gets a static empty sample collection
+    /// </summary>
+    public static SampleCollection Empty => new();
 
     /// <summary>
     /// Creates a sample collection from an enumerable of samples
