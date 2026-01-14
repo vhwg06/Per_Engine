@@ -31,7 +31,39 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+**Specification-Driven Development**:
+- [ ] Feature defined through explicit, machine-readable specification
+- [ ] Specification version-controlled and precedes implementation
+
+**Domain-Driven Design**:
+- [ ] Domain models independent of infrastructure (databases, execution engines, file formats)
+- [ ] Core logic expressed in ubiquitous language without technical coupling
+- [ ] If persistence required: repositories implement domain-defined abstractions
+
+**Clean Architecture**:
+- [ ] Dependencies point inward (domain ← application ← adapters ← infrastructure)
+- [ ] External systems accessed only through domain-defined interfaces
+- [ ] No infrastructure imports in domain/application layers
+
+**Layered Phase Independence**:
+- [ ] Clear phase boundaries (specification → generation → execution → analysis → persistence → reporting)
+- [ ] Phases communicate through serializable, engine-agnostic interfaces
+- [ ] Changes isolated to single phase without cascading coupling
+
+**Determinism & Reproducibility**:
+- [ ] Identical specifications produce identical artifacts
+- [ ] Non-deterministic factors (timestamps, randomness) controlled or normalized
+- [ ] All inputs, configurations, and criteria explicitly versioned
+
+**Engine-Agnostic Abstraction** (if execution engine involved):
+- [ ] Results normalized into engine-agnostic domain models
+- [ ] Evaluation logic operates on domain models, not engine-specific formats
+- [ ] No engine data structures or APIs leak into domain layer
+
+**Evolution-Friendly Design**:
+- [ ] No technology locked at constitutional level (specific languages/frameworks/databases are plan-level decisions)
+- [ ] New capabilities extend existing layers without bypassing architecture
+- [ ] Breaking changes explicitly justified and documented
 
 ## Project Structure
 

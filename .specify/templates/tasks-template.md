@@ -60,6 +60,12 @@ description: "Task list template for feature implementation"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
+**Architecture Conformance**: All foundational tasks must respect the constitutional principles:
+- Domain models independent of infrastructure (DDD)
+- Dependencies point inward toward domain (Clean Architecture)
+- Phase boundaries clearly defined with serializable interfaces (Layered Independence)
+- Infrastructure components implement domain-defined abstractions (ports/adapters)
+
 Examples of foundational tasks (adjust based on your project):
 
 - [ ] T004 Setup database schema and migrations framework
