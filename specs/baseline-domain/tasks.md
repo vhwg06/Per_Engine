@@ -24,18 +24,18 @@
 
 ### Domain Project Creation
 
-- [ ] T001 Create project directory structure per plan.md in `src/PerformanceEngine.Baseline.Domain/`
-- [ ] T002 Create project directory structure in `src/PerformanceEngine.Baseline.Infrastructure/`
-- [ ] T003 Create test project directories in `tests/PerformanceEngine.Baseline.Domain.Tests/` and `tests/PerformanceEngine.Baseline.Infrastructure.Tests/`
+- [x] T001 Create project directory structure per plan.md in `src/PerformanceEngine.Baseline.Domain/`
+- [x] T002 Create project directory structure in `src/PerformanceEngine.Baseline.Infrastructure/`
+- [x] T003 Create test project directories in `tests/PerformanceEngine.Baseline.Domain.Tests/` and `tests/PerformanceEngine.Baseline.Infrastructure.Tests/`
 
 ### Project Configuration
 
-- [ ] T004 [P] Create `src/PerformanceEngine.Baseline.Domain/PerformanceEngine.Baseline.Domain.csproj` with .NET 10 target, nullable reference types, LangVersion 13.0
-- [ ] T005 [P] Create `src/PerformanceEngine.Baseline.Infrastructure/PerformanceEngine.Baseline.Infrastructure.csproj` with Redis (StackExchange.Redis 2.8.0) and DependencyInjection NuGet references
-- [ ] T006 [P] Create test project `.csproj` files with xUnit 2.8.1, FluentAssertions 6.12.1, and project references
-- [ ] T007 Add projects to `PerformanceEngine.Metrics.sln` solution file
-- [ ] T008 [P] Create `src/PerformanceEngine.Baseline.Domain/global.usings.cs` with standard using directives
-- [ ] T009 [P] Create `README.md` and `IMPLEMENTATION_GUIDE.md` in domain project root
+- [x] T004 [P] Create `src/PerformanceEngine.Baseline.Domain/PerformanceEngine.Baseline.Domain.csproj` with .NET 10 target, nullable reference types, LangVersion 13.0
+- [x] T005 [P] Create `src/PerformanceEngine.Baseline.Infrastructure/PerformanceEngine.Baseline.Infrastructure.csproj` with Redis (StackExchange.Redis 2.8.0) and DependencyInjection NuGet references
+- [x] T006 [P] Create test project `.csproj` files with xUnit 2.8.1, FluentAssertions 6.12.1, and project references
+- [x] T007 Add projects to `PerformanceEngine.Metrics.sln` solution file
+- [x] T008 [P] Create `src/PerformanceEngine.Baseline.Domain/global.usings.cs` with standard using directives
+- [x] T009 [P] Create `README.md` and `IMPLEMENTATION_GUIDE.md` in domain project root
 
 ---
 
@@ -51,53 +51,53 @@
 
 ### Domain Exceptions & Invariants
 
-- [ ] T010 [P] Create exception hierarchy in `src/PerformanceEngine.Baseline.Domain/Domain/BaselineDomainException.cs`
+- [x] T010 [P] Create exception hierarchy in `src/PerformanceEngine.Baseline.Domain/Domain/BaselineDomainException.cs`
   - Includes: BaselineDomainException, DomainInvariantViolatedException, BaselineNotFoundException, ToleranceValidationException, ConfidenceValidationException
-- [ ] T011 [P] Create `src/PerformanceEngine.Baseline.Domain/Domain/Baselines/BaselineInvariants.cs` (immutability enforcement, consistency checks)
-- [ ] T012 [P] Create `src/PerformanceEngine.Baseline.Domain/Domain/Comparisons/ComparisonResultInvariants.cs` (outcome aggregation validation)
+- [x] T011 [P] Create `src/PerformanceEngine.Baseline.Domain/Domain/Baselines/BaselineInvariants.cs` (immutability enforcement, consistency checks)
+- [x] T012 [P] Create `src/PerformanceEngine.Baseline.Domain/Domain/Comparisons/ComparisonResultInvariants.cs` (outcome aggregation validation)
 
 ### Baseline Aggregate Root
 
-- [ ] T013 [P] Create `BaselineId.cs` value object in `src/PerformanceEngine.Baseline.Domain/Domain/Baselines/` with:
+- [x] T013 [P] Create `BaselineId.cs` value object in `src/PerformanceEngine.Baseline.Domain/Domain/Baselines/` with:
   - UUID generation, equality semantics, immutability
   - Test: IEquatable, hash consistency
-- [ ] T014 [P] Create `Baseline.cs` aggregate root in `src/PerformanceEngine.Baseline.Domain/Domain/Baselines/` with:
+- [x] T014 [P] Create `Baseline.cs` aggregate root in `src/PerformanceEngine.Baseline.Domain/Domain/Baselines/` with:
   - Properties: Id, CreatedAt, Metrics, EvaluationResults, ToleranceConfig
   - Method: GetMetric(name) → IMetric?
   - Immutability: read-only collections, no setters
   - Constructor validation per BaselineInvariants
-- [ ] T015 [P] Create `BaselineFactory.cs` domain service in `src/PerformanceEngine.Baseline.Domain/Domain/Baselines/` for baseline creation with validation
+- [x] T015 [P] Create `BaselineFactory.cs` domain service in `src/PerformanceEngine.Baseline.Domain/Domain/Baselines/` for baseline creation with validation
 
 ### Tolerance Value Objects & Rules
 
-- [ ] T016 [P] Create `Tolerance.cs` value object in `src/PerformanceEngine.Baseline.Domain/Domain/Tolerances/` with:
+- [x] T016 [P] Create `Tolerance.cs` value object in `src/PerformanceEngine.Baseline.Domain/Domain/Tolerances/` with:
   - Properties: MetricName, Type (enum), Amount
   - Method: IsWithinTolerance(baseline, current) → bool
   - Validation: non-negative amount, known metric name
-- [ ] T017 [P] Create `ToleranceType.cs` enum: RELATIVE (percentage), ABSOLUTE (value-based)
-- [ ] T018 [P] Create `ToleranceConfiguration.cs` collection in `src/PerformanceEngine.Baseline.Domain/Domain/Tolerances/` with:
+- [x] T017 [P] Create `ToleranceType.cs` enum: RELATIVE (percentage), ABSOLUTE (value-based)
+- [x] T018 [P] Create `ToleranceConfiguration.cs` collection in `src/PerformanceEngine.Baseline.Domain/Domain/Tolerances/` with:
   - Methods: GetTolerance(name), HasTolerance(name)
   - Validation: all metrics have rules, no duplicates
-- [ ] T019 [P] Create `ToleranceValidation.cs` in `src/PerformanceEngine.Baseline.Domain/Domain/Tolerances/` for invariant enforcement
+- [x] T019 [P] Create `ToleranceValidation.cs` in `src/PerformanceEngine.Baseline.Domain/Domain/Tolerances/` for invariant enforcement
 
 ### Confidence Level Value Object
 
-- [ ] T020 [P] Create `ConfidenceLevel.cs` value object in `src/PerformanceEngine.Baseline.Domain/Domain/Confidence/` with:
+- [x] T020 [P] Create `ConfidenceLevel.cs` value object in `src/PerformanceEngine.Baseline.Domain/Domain/Confidence/` with:
   - Property: Value [0.0, 1.0]
   - Method: IsConclusive(threshold) → bool
   - Immutability, equality, validation in [0.0, 1.0] range
-- [ ] T021 [P] Create `ConfidenceCalculator.cs` domain service in `src/PerformanceEngine.Baseline.Domain/Domain/Confidence/` with:
+- [x] T021 [P] Create `ConfidenceCalculator.cs` domain service in `src/PerformanceEngine.Baseline.Domain/Domain/Confidence/` with:
   - Method: CalculateConfidence(magnitude, tolerance) → ConfidenceLevel
   - Algorithm per research.md (magnitude-based formula)
 
 ### Comparison Logic (Pure Domain Service)
 
-- [ ] T022 [P] Create `ComparisonOutcome.cs` enum in `src/PerformanceEngine.Baseline.Domain/Domain/Comparisons/`:
+- [x] T022 [P] Create `ComparisonOutcome.cs` enum in `src/PerformanceEngine.Baseline.Domain/Domain/Comparisons/`:
   - Values: IMPROVEMENT, REGRESSION, NO_SIGNIFICANT_CHANGE, INCONCLUSIVE
-- [ ] T023 [P] Create `ComparisonMetric.cs` in `src/PerformanceEngine.Baseline.Domain/Domain/Comparisons/` with:
+- [x] T023 [P] Create `ComparisonMetric.cs` in `src/PerformanceEngine.Baseline.Domain/Domain/Comparisons/` with:
   - Properties: MetricName, BaselineValue, CurrentValue, AbsoluteChange, RelativeChange, Tolerance, Outcome, Confidence
   - Immutable, calculated at construction
-- [ ] T024 Create `ComparisonCalculator.cs` domain service in `src/PerformanceEngine.Baseline.Domain/Domain/Comparisons/` with:
+- [x] T024 Create `ComparisonCalculator.cs` domain service in `src/PerformanceEngine.Baseline.Domain/Domain/Comparisons/` with:
   - Method: CalculateMetric(baseline, current, tolerance, threshold) → ComparisonMetric
   - Method: DetermineOutcome(tolerance, confidence) → ComparisonOutcome
   - Pure functions per research.md (confidence formula, tolerance evaluation)
@@ -105,23 +105,23 @@
 
 ### Comparison Result Aggregate Root
 
-- [ ] T025 [P] Create `ComparisonResult.cs` aggregate root in `src/PerformanceEngine.Baseline.Domain/Domain/Comparisons/` with:
+- [x] T025 [P] Create `ComparisonResult.cs` aggregate root in `src/PerformanceEngine.Baseline.Domain/Domain/Comparisons/` with:
   - Properties: Id, BaselineId, ComparedAt, OverallOutcome, OverallConfidence, MetricResults (read-only)
   - Method: HasRegression() → bool
   - Immutable, outcome aggregation per research.md (worst-case strategy)
   - Depends: T022, T023
-- [ ] T026 [P] Create `OutcomeAggregator.cs` in `src/PerformanceEngine.Baseline.Domain/Domain/Comparisons/` with:
+- [x] T026 [P] Create `OutcomeAggregator.cs` in `src/PerformanceEngine.Baseline.Domain/Domain/Comparisons/` with:
   - Method: Aggregate(metrics) → ComparisonOutcome (priority: REGRESSION > IMPROVEMENT > ...)
   - Method: AggregateConfidence(metrics) → ConfidenceLevel (minimum confidence)
 
 ### Domain Events (Optional, Phase 1)
 
-- [ ] T027 [P] Create `BaselineCreatedEvent.cs` in `src/PerformanceEngine.Baseline.Domain/Domain/Events/`
-- [ ] T028 [P] Create `ComparisonPerformedEvent.cs` in `src/PerformanceEngine.Baseline.Domain/Domain/Events/`
+- [x] T027 [P] Create `BaselineCreatedEvent.cs` in `src/PerformanceEngine.Baseline.Domain/Domain/Events/`
+- [x] T028 [P] Create `ComparisonPerformedEvent.cs` in `src/PerformanceEngine.Baseline.Domain/Domain/Events/`
 
 ### Repository Port (Infrastructure Boundary)
 
-- [ ] T029 [P] Create `IBaselineRepository.cs` port in `src/PerformanceEngine.Baseline.Domain/Ports/` with:
+- [x] T029 [P] Create `IBaselineRepository.cs` port in `src/PerformanceEngine.Baseline.Domain/Ports/` with:
   - Method: CreateAsync(baseline) → BaselineId
   - Method: GetByIdAsync(id) → Baseline?
   - Method: ListRecentAsync(count) → IReadOnlyList<Baseline>
