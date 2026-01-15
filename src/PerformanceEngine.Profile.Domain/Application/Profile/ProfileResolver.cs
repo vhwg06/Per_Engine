@@ -25,7 +25,7 @@ public sealed class ProfileResolver
     /// <returns>Immutable, sorted dictionary representing resolved profile.</returns>
     /// <exception cref="ArgumentNullException">Thrown when profile or overrides is null.</exception>
     public IReadOnlyDictionary<string, object> Resolve(
-        PerformanceEngine.Profile.Domain.Domain.Profile profile,
+        PerformanceEngine.Profile.Domain.Domain.Profiles.Profile profile,
         IEnumerable<(string scope, string key, object value)> overrides)
     {
         if (profile == null)
@@ -42,10 +42,11 @@ public sealed class ProfileResolver
         var allOverrides = overrides.ToList();
 
         // Sort deterministically:
-        // 1. By scope priority (global=1, api=2, endpoint=3 - descending so higher priority first)
+        // 1. By scope priority (global=1, api=2, endpoint=3 - ascending so lower priority applied first)
         // 2. Then by key name (alphabetically ascending)
+        // Later items override earlier ones, so higher priority wins
         var sortedOverrides = allOverrides
-            .OrderByDescending(o => GetScopePriority(o.scope))
+            .OrderBy(o => GetScopePriority(o.scope))
             .ThenBy(o => o.key)
             .ToList();
 
@@ -55,7 +56,7 @@ public sealed class ProfileResolver
         foreach (var (scope, key, value) in sortedOverrides)
         {
             // Later scopes override earlier ones
-            // Within same scope, last one wins
+            // Since we sorted ascending by priority, higher priority (endpoint=3) wins
             result[key] = value;
         }
 
@@ -65,7 +66,7 @@ public sealed class ProfileResolver
 
     /// <summary>
     /// Gets the priority for a scope (higher number = higher priority, applied later).
-    /// Global < API < Endpoint
+    /// Scopes in order: global (1) less than api (2) less than endpoint (3).
     /// </summary>
     private static int GetScopePriority(string scope) =>
         scope?.ToLowerInvariant() switch
@@ -85,7 +86,7 @@ public sealed class ProfileResolver
     /// <param name="overrides">Collection of overrides.</param>
     /// <returns>List of resolved dictionaries from different orderings (should be identical).</returns>
     public List<IReadOnlyDictionary<string, object>> VerifyOrderIndependence(
-        PerformanceEngine.Profile.Domain.Domain.Profile profile,
+        PerformanceEngine.Profile.Domain.Domain.Profiles.Profile profile,
         IEnumerable<(string scope, string key, object value)> overrides)
     {
         var overridesList = overrides.ToList();
@@ -95,7 +96,7 @@ public sealed class ProfileResolver
         results.Add(Resolve(profile, overridesList));
 
         // Resolve with shuffled order (determinism test)
-        var random = new Random(seed: 42);  // Fixed seed for reproducibility
+        var random = new Random(42);  // Fixed seed for reproducibility
         for (int i = 0; i < 5; i++)
         {
             var shuffled = overridesList.OrderBy(_ => random.Next()).ToList();
