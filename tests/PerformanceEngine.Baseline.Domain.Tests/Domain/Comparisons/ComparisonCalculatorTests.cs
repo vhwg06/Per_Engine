@@ -76,7 +76,7 @@ public class ComparisonCalculatorTests
     }
 
     [Fact]
-    public void CalculateMetric_WithChangeWithinTolerance_ReturnsNoSignificantChange()
+    public void CalculateMetric_WithChangeWithinTolerance_StoresValues()
     {
         // Arrange
         var baseline = 1000m;
@@ -90,6 +90,7 @@ public class ComparisonCalculatorTests
         result.MetricName.Should().Be("Throughput");
         result.BaselineValue.Should().Be(baseline);
         result.CurrentValue.Should().Be(current);
+        result.AbsoluteChange.Should().Be(5m);
     }
 
     [Fact]

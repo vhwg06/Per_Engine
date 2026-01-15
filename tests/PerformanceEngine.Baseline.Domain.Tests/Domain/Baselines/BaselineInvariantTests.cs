@@ -39,7 +39,8 @@ public class BaselineInvariantTests
     {
         // Arrange
         var emptyMetrics = Array.Empty<IMetric>();
-        var toleranceConfig = new ToleranceConfiguration(Array.Empty<Tolerance>());
+        var tolerance = new Tolerance("CPU", ToleranceType.Absolute, 5m);
+        var toleranceConfig = new ToleranceConfiguration(new[] { tolerance });
 
         // Act & Assert
         var action = () => BaselineInvariants.AssertValid(emptyMetrics, toleranceConfig);
