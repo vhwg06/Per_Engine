@@ -1,7 +1,8 @@
 namespace PerformanceEngine.Baseline.Infrastructure.Persistence;
 
-using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using PerformanceEngine.Baseline.Domain.Application.Dto;
+using PerformanceEngine.Baseline.Domain.Domain.Baselines;
 using PerformanceEngine.Baseline.Domain.Domain.Tolerances;
 using PerformanceEngine.Metrics.Domain.Metrics;
 
@@ -22,6 +23,7 @@ public class BaselineRedisMapper
     /// </summary>
     /// <param name="baseline">The baseline to serialize</param>
     /// <returns>JSON string representation</returns>
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "BaselineDto is a known type")]
     public static string Serialize(Baseline baseline)
     {
         ArgumentNullException.ThrowIfNull(baseline);
@@ -36,6 +38,7 @@ public class BaselineRedisMapper
     /// <param name="json">The JSON string</param>
     /// <returns>Reconstructed baseline</returns>
     /// <exception cref="InvalidOperationException">If deserialization fails</exception>
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "BaselineDto is a known type")]
     public static Baseline Deserialize(string json)
     {
         if (string.IsNullOrWhiteSpace(json))

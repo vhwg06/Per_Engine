@@ -20,7 +20,7 @@ public class ToleranceTests
     }
 
     [Fact]
-    public void Constructor_ValidRelativeTolerance_Succeeds()
+    public void Constructor_ValidRelativeTodlerance_Succeeds()
     {
         // Act
         var tolerance = new Tolerance("throughput", ToleranceType.Relative, 10m);

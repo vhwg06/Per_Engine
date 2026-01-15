@@ -1,5 +1,8 @@
 namespace PerformanceEngine.Baseline.Infrastructure.Persistence;
 
+using PerformanceEngine.Baseline.Domain.Domain;
+using PerformanceEngine.Baseline.Domain.Domain.Baselines;
+
 /// <summary>
 /// Redis implementation of IBaselineRepository port.
 /// Provides persistence abstraction for baseline storage using Redis.
@@ -34,7 +37,7 @@ public class RedisBaselineRepository : IBaselineRepository
 
             if (!setSuccess)
             {
-                throw new RepositoryException($"Failed to store baseline '{baseline.Id.Value}' in Redis.");
+                throw new RepositoryException("CreateAsync", $"Failed to store baseline '{baseline.Id.Value}' in Redis.");
             }
 
             // Also store in recent baselines sorted set (for ListRecentAsync)
@@ -56,8 +59,8 @@ public class RedisBaselineRepository : IBaselineRepository
         catch (Exception ex)
         {
             throw new RepositoryException(
-                $"Error creating baseline: {ex.Message}",
-                ex
+                "CreateAsync",
+                $"Unable to store baseline: {ex.Message}"
             );
         }
     }
@@ -89,8 +92,8 @@ public class RedisBaselineRepository : IBaselineRepository
         catch (Exception ex)
         {
             throw new RepositoryException(
-                $"Error retrieving baseline '{id.Value}': {ex.Message}",
-                ex
+                "GetByIdAsync",
+                $"Unable to retrieve baseline '{id.Value}': {ex.Message}"
             );
         }
     }
@@ -142,8 +145,8 @@ public class RedisBaselineRepository : IBaselineRepository
         catch (Exception ex)
         {
             throw new RepositoryException(
-                $"Error listing recent baselines: {ex.Message}",
-                ex
+                "ListRecentAsync",
+                $"Unable to list recent baselines: {ex.Message}"
             );
         }
     }

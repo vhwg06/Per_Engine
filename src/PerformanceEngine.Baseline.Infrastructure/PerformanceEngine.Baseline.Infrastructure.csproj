@@ -13,6 +13,7 @@
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <RootNamespace>PerformanceEngine.Baseline.Infrastructure</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

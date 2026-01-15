@@ -1,5 +1,7 @@
 namespace PerformanceEngine.Baseline.Infrastructure.Persistence;
 
+using PerformanceEngine.Baseline.Domain.Domain.Baselines;
+
 /// <summary>
 /// Builds Redis keys for baseline storage using a consistent naming convention.
 /// Prevents key collisions and enables efficient key scanning.
