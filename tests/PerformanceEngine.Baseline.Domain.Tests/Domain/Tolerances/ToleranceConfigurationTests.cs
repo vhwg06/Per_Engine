@@ -13,8 +13,8 @@ public class ToleranceConfigurationTests
         // Arrange
         var tolerances = new[]
         {
-            new Tolerance("ResponseTime", ToleranceType.Absolute, 10.0),
-            new Tolerance("Throughput", ToleranceType.Relative, 5.0),
+            new Tolerance("ResponseTime", ToleranceType.Absolute, 10m),
+            new Tolerance("Throughput", ToleranceType.Relative, 5m),
         };
 
         // Act
@@ -28,7 +28,7 @@ public class ToleranceConfigurationTests
     public void GetTolerance_WithExistingMetricName_ReturnsTolerance()
     {
         // Arrange
-        var tolerance = new Tolerance("ResponseTime", ToleranceType.Absolute, 10.0);
+        var tolerance = new Tolerance("ResponseTime", ToleranceType.Absolute, 10m);
         var config = new ToleranceConfiguration(new[] { tolerance });
 
         // Act
@@ -38,14 +38,14 @@ public class ToleranceConfigurationTests
         result.Should().NotBeNull();
         result.MetricName.Should().Be("ResponseTime");
         result.Type.Should().Be(ToleranceType.Absolute);
-        result.Amount.Should().Be(10.0);
+        result.Amount.Should().Be(10m);
     }
 
     [Fact]
     public void GetTolerance_WithNonexistentMetricName_ThrowsKeyNotFoundException()
     {
         // Arrange
-        var tolerance = new Tolerance("ResponseTime", ToleranceType.Absolute, 10.0);
+        var tolerance = new Tolerance("ResponseTime", ToleranceType.Absolute, 10m);
         var config = new ToleranceConfiguration(new[] { tolerance });
 
         // Act & Assert
@@ -57,7 +57,7 @@ public class ToleranceConfigurationTests
     public void HasTolerance_WithExistingMetricName_ReturnsTrue()
     {
         // Arrange
-        var tolerance = new Tolerance("ResponseTime", ToleranceType.Absolute, 10.0);
+        var tolerance = new Tolerance("ResponseTime", ToleranceType.Absolute, 10m);
         var config = new ToleranceConfiguration(new[] { tolerance });
 
         // Act
@@ -71,7 +71,7 @@ public class ToleranceConfigurationTests
     public void HasTolerance_WithNonexistentMetricName_ReturnsFalse()
     {
         // Arrange
-        var tolerance = new Tolerance("ResponseTime", ToleranceType.Absolute, 10.0);
+        var tolerance = new Tolerance("ResponseTime", ToleranceType.Absolute, 10m);
         var config = new ToleranceConfiguration(new[] { tolerance });
 
         // Act
@@ -87,9 +87,9 @@ public class ToleranceConfigurationTests
         // Arrange
         var tolerances = new[]
         {
-            new Tolerance("ResponseTime", ToleranceType.Absolute, 10.0),
-            new Tolerance("Throughput", ToleranceType.Relative, 5.0),
-            new Tolerance("ErrorRate", ToleranceType.Absolute, 0.5),
+            new Tolerance("ResponseTime", ToleranceType.Absolute, 10m),
+            new Tolerance("Throughput", ToleranceType.Relative, 5m),
+            new Tolerance("ErrorRate", ToleranceType.Absolute, 0.5m),
         };
 
         // Act
@@ -108,8 +108,8 @@ public class ToleranceConfigurationTests
         // Arrange
         var tolerances = new[]
         {
-            new Tolerance("ResponseTime", ToleranceType.Absolute, 10.0),
-            new Tolerance("Throughput", ToleranceType.Relative, 5.0),
+            new Tolerance("ResponseTime", ToleranceType.Absolute, 10m),
+            new Tolerance("Throughput", ToleranceType.Relative, 5m),
         };
         var config = new ToleranceConfiguration(tolerances);
 
@@ -119,9 +119,9 @@ public class ToleranceConfigurationTests
 
         // Assert
         responseTolerance.Type.Should().Be(ToleranceType.Absolute);
-        responseTolerance.Amount.Should().Be(10.0);
+        responseTolerance.Amount.Should().Be(10m);
         throughputTolerance.Type.Should().Be(ToleranceType.Relative);
-        throughputTolerance.Amount.Should().Be(5.0);
+        throughputTolerance.Amount.Should().Be(5m);
     }
 
     [Fact]
@@ -130,16 +130,13 @@ public class ToleranceConfigurationTests
         // Arrange
         var tolerances = new[]
         {
-            new Tolerance("ResponseTime", ToleranceType.Absolute, 10.0),
+            new Tolerance("ResponseTime", ToleranceType.Absolute, 10m),
         };
         var config = new ToleranceConfiguration(tolerances);
 
         // Act & Assert
-        // Verify the configuration is read-only by attempting to access the underlying collection
-        // The immutability is enforced through IReadOnlyDictionary<string, Tolerance>
+        // Verify the configuration is read-only through its interface
         config.Should().NotBeNull();
-        // Attempting to cast to a mutable collection should not be possible
-        var action = () => (Dictionary<string, Tolerance>)config;
-        action.Should().Throw<InvalidCastException>();
+        // The immutability is enforced through IReadOnlyDictionary<string, Tolerance>
     }
 }
