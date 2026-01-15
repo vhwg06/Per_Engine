@@ -50,16 +50,21 @@ public sealed class ComputeMetricUseCase
         var aggregation = CreateAggregationOperation(operationName);
         var aggregationResult = aggregation.Aggregate(normalizedSamples, window);
 
-        // Step 4: Create Metric entity with result
-        var metric = new Metric(
-            normalizedSamples,
-            window,
-            operationName,
-            new[] { aggregationResult },
-            DateTime.UtcNow);
+        // Step 4: Create Metric entity with enrichment metadata
+        // Using factory method to provide complete sample count information
+        var computedAt = DateTime.UtcNow;
+        var metric = Metric.Create(
+            samples: normalizedSamples,
+            window: window,
+            metricType: operationName,
+            sampleCount: normalizedSamples.Count,
+            requiredSampleCount: normalizedSamples.Count, // Default: all collected samples are required
+            aggregationWindow: window.ToString() ?? "unknown",
+            aggregatedValues: new[] { aggregationResult },
+            computedAt: computedAt);
 
         // Step 5: Could publish MetricComputedEvent here if event publishing is implemented
-        // _eventPublisher.Publish(new MetricComputedEvent(metric, operationName, DateTime.UtcNow));
+        // _eventPublisher.Publish(new MetricComputedEvent(metric, operationName, computedAt));
 
         return metric;
     }

@@ -1,4 +1,5 @@
 using PerformanceEngine.Metrics.Domain.Metrics;
+using PerformanceEngine.Evaluation.Domain.Ports;
 
 namespace PerformanceEngine.Evaluation.Domain.Domain.Evaluation;
 
@@ -6,9 +7,29 @@ namespace PerformanceEngine.Evaluation.Domain.Domain.Evaluation;
 /// Pure domain service for evaluating metrics against rules.
 /// Deterministic: identical inputs always produce identical outputs.
 /// No side effects: does not modify state or perform I/O.
+/// Supports partial metrics with configurable policies for INCONCLUSIVE outcomes.
 /// </summary>
 public sealed class Evaluator
 {
+    private readonly IPartialMetricPolicy _partialMetricPolicy;
+
+    /// <summary>
+    /// Initializes a new instance of Evaluator with default deny-partial-metrics policy.
+    /// </summary>
+    public Evaluator()
+        : this(new Application.Evaluation.PartialMetricPolicy())
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of Evaluator with a custom partial metric policy.
+    /// </summary>
+    /// <param name="partialMetricPolicy">Policy determining when partial metrics are allowed.</param>
+    public Evaluator(IPartialMetricPolicy partialMetricPolicy)
+    {
+        _partialMetricPolicy = partialMetricPolicy ?? throw new ArgumentNullException(nameof(partialMetricPolicy));
+    }
+
     /// <summary>
     /// Evaluates a single metric against a single rule.
     /// </summary>
@@ -28,6 +49,17 @@ public sealed class Evaluator
             throw new ArgumentNullException(nameof(rule));
         }
 
+        // Check if metric is partial and policy allows it
+        if (metric.CompletessStatus == CompletessStatus.PARTIAL && !_partialMetricPolicy.IsPartialMetricAllowed(rule.Id))
+        {
+            var reason = $"Metric '{metric.MetricType}' is PARTIAL (evidence: {metric.Evidence.SampleCount}/{metric.Evidence.RequiredSampleCount} samples) but rule '{rule.Id}' does not allow partial metrics.";
+            return EvaluationResult.Inconclusive(
+                violations: ImmutableList<Violation>.Empty,
+                reason: reason,
+                evidence: null,
+                evaluatedAt: DateTime.UtcNow);
+        }
+
         // Delegate to rule's evaluate method (strategy pattern)
         return rule.Evaluate(metric);
     }
@@ -35,6 +67,7 @@ public sealed class Evaluator
     /// <summary>
     /// Evaluates a single metric against multiple rules.
     /// Returns a single EvaluationResult aggregating all violations.
+    /// Returns INCONCLUSIVE if metric is partial and not allowed by policy.
     /// </summary>
     /// <param name="metric">The metric to evaluate.</param>
     /// <param name="rules">The rules to evaluate against.</param>
@@ -58,20 +91,38 @@ public sealed class Evaluator
             return EvaluationResult.Pass(DateTime.UtcNow);
         }
 
+        // Check if metric is partial and globally not allowed
+        var timestamp = DateTime.UtcNow;
+        if (metric.CompletessStatus == CompletessStatus.PARTIAL && !_partialMetricPolicy.IsPartialMetricAllowedByDefault())
+        {
+            var reason = $"Metric '{metric.MetricType}' is PARTIAL (evidence: {metric.Evidence.SampleCount}/{metric.Evidence.RequiredSampleCount} samples) and partial metrics are not allowed by policy.";
+            return EvaluationResult.Inconclusive(
+                violations: ImmutableList<Violation>.Empty,
+                reason: reason,
+                evidence: null,
+                evaluatedAt: timestamp);
+        }
+
         // Evaluate each rule and collect violations
         var allViolations = new List<Violation>();
         var allOutcomes = new List<Severity>();
         
         foreach (var rule in rulesList.OrderBy(r => r.Id)) // Deterministic ordering by rule ID
         {
+            // Check rule-specific partial metric policy
+            if (metric.CompletessStatus == CompletessStatus.PARTIAL && !_partialMetricPolicy.IsPartialMetricAllowed(rule.Id))
+            {
+                // Skip evaluation for this rule due to partial metrics
+                continue;
+            }
+
             var result = rule.Evaluate(metric);
             allOutcomes.Add(result.Outcome);
             allViolations.AddRange(result.Violations);
         }
 
         // Determine overall outcome (most severe)
-        var overallOutcome = allOutcomes.MostSevere();
-        var timestamp = DateTime.UtcNow;
+        var overallOutcome = allOutcomes.Any() ? allOutcomes.MostSevere() : Severity.PASS;
 
         return new EvaluationResult
         {

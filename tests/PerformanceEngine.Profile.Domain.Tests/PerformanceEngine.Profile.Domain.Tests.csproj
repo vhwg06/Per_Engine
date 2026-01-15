@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\PerformanceEngine.Profile.Domain\PerformanceEngine.Profile.Domain.csproj" />
+    <ProjectReference Include="..\Fixtures\PerformanceEngine.Tests.Fixtures.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsTestProject>true</IsTestProject>
+    <NoWarn>CS1591</NoWarn>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/PerformanceEngine.Metrics.Domain/PerformanceEngine.Metrics.Domain.csproj" />
+    <ProjectReference Include="../../src/PerformanceEngine.Evaluation.Domain/PerformanceEngine.Evaluation.Domain.csproj" />
+    <ProjectReference Include="../../src/PerformanceEngine.Profile.Domain/PerformanceEngine.Profile.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
