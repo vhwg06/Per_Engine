@@ -2,9 +2,10 @@ namespace PerformanceEngine.Profile.Domain.Domain.Validation;
 
 /// <summary>
 /// Value object representing a single validation error.
-/// Immutable; contains error code, message, and affected field name.
+/// Immutable record; contains error code, message, and affected field name.
+/// Equality is based on value comparison of all properties.
 /// </summary>
-public sealed class ValidationError : ValueObject
+public sealed record ValidationError
 {
     /// <summary>
     /// Machine-readable error code (e.g., "CIRCULAR_DEPENDENCY", "MISSING_REQUIRED_KEY", "TYPE_MISMATCH").
@@ -43,17 +44,6 @@ public sealed class ValidationError : ValueObject
         ErrorCode = errorCode;
         Message = message;
         FieldName = fieldName;
-    }
-
-    /// <summary>
-    /// Returns all properties for value object equality comparison.
-    /// Ensures two ValidationErrors are equal if all properties match.
-    /// </summary>
-    protected override IEnumerable<object?> GetEqualityComponents()
-    {
-        yield return ErrorCode;
-        yield return Message;
-        yield return FieldName;
     }
 
     public override string ToString()

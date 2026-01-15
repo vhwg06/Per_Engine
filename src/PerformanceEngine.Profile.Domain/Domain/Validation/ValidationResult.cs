@@ -4,8 +4,9 @@ namespace PerformanceEngine.Profile.Domain.Domain.Validation;
 /// Value object representing the result of profile validation.
 /// Immutable; contains validation status and all collected errors.
 /// Supports non-early-exit validation: all errors collected at once for complete feedback.
+/// Equality is based on value comparison of status and error list.
 /// </summary>
-public sealed class ValidationResult : ValueObject
+public sealed class ValidationResult : IEquatable<ValidationResult>
 {
     /// <summary>
     /// Indicates whether the profile passed validation (true = valid, false = invalid).
@@ -70,14 +71,59 @@ public sealed class ValidationResult : ValueObject
     }
 
     /// <summary>
-    /// Returns all properties for value object equality comparison.
+    /// Equality comparison based on IsValid and Errors values.
     /// </summary>
-    protected override IEnumerable<object?> GetEqualityComponents()
+    public bool Equals(ValidationResult? other)
     {
-        yield return IsValid;
-        foreach (var error in Errors)
-            yield return error;
+        if (other is null)
+            return false;
+
+        if (IsValid != other.IsValid)
+            return false;
+
+        if (Errors.Count != other.Errors.Count)
+            return false;
+
+        return Errors.SequenceEqual(other.Errors);
     }
+
+    /// <summary>
+    /// Equality override for object comparison.
+    /// </summary>
+    public override bool Equals(object? obj)
+        => Equals(obj as ValidationResult);
+
+    /// <summary>
+    /// Hash code computation based on IsValid and Errors.
+    /// </summary>
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            int hash = IsValid.GetHashCode();
+            foreach (var error in Errors)
+            {
+                hash = hash * 31 + (error?.GetHashCode() ?? 0);
+            }
+            return hash;
+        }
+    }
+
+    /// <summary>
+    /// Equality operator.
+    /// </summary>
+    public static bool operator ==(ValidationResult? left, ValidationResult? right)
+    {
+        if (left is null)
+            return right is null;
+        return left.Equals(right);
+    }
+
+    /// <summary>
+    /// Inequality operator.
+    /// </summary>
+    public static bool operator !=(ValidationResult? left, ValidationResult? right)
+        => !(left == right);
 
     public override string ToString()
         => IsValid ? "Valid" : $"Invalid: {Errors.Count} error(s)";

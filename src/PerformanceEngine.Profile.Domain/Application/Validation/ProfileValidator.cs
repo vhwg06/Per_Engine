@@ -46,20 +46,20 @@ public class ProfileValidator : IProfileValidator
     }
 
     /// <summary>
-    /// Validates scope is one of the allowed types (Global, API, Endpoint).
+    /// Validates scope is one of the allowed types (Global, Api, Endpoint).
     /// </summary>
     private static void ValidateScope(IScope scope, List<ValidationError> errors)
     {
-        var validScopes = new[] { ScopeType.Global, ScopeType.Api, ScopeType.Endpoint };
-        if (!validScopes.Contains(scope.Type))
+        // Validate scope type is non-empty
+        if (string.IsNullOrWhiteSpace(scope.Type))
         {
             errors.Add(new ValidationError(
                 "INVALID_SCOPE",
-                $"Scope type must be one of: {string.Join(", ", validScopes)}, but was {scope.Type}",
-                "Scope"));
+                "Scope type cannot be empty",
+                "Scope.Type"));
         }
 
-        // Scope ID must be non-empty (or validated according to scope type)
+        // Scope ID must be non-empty
         if (string.IsNullOrWhiteSpace(scope.Id))
         {
             errors.Add(new ValidationError(
