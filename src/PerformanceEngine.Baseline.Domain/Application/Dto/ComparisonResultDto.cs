@@ -1,6 +1,7 @@
 namespace PerformanceEngine.Baseline.Domain.Application.Dto;
 
 using System.Collections.Immutable;
+using PerformanceEngine.Baseline.Domain.Domain.Baselines;
 using PerformanceEngine.Baseline.Domain.Domain.Comparisons;
 using PerformanceEngine.Baseline.Domain.Domain.Confidence;
 
@@ -62,14 +63,18 @@ public class ComparisonMetricDto
     /// <summary>
     /// Converts this DTO back to a domain ComparisonMetric object.
     /// </summary>
-    public ComparisonMetric ToDomain() =>
-        new(
+    public ComparisonMetric ToDomain()
+    {
+        var tolerance = new Tolerance(MetricName, ToleranceType.Absolute, 1m); // Dummy tolerance for reconstruction
+        return new ComparisonMetric(
             MetricName,
             BaselineValue,
             CurrentValue,
-            new ConfidenceLevel(Confidence),
-            Outcome
+            tolerance,
+            Outcome,
+            new ConfidenceLevel(Confidence)
         );
+    }
 }
 
 /// <summary>
@@ -114,7 +119,7 @@ public class ComparisonResultDto
         new()
         {
             Id = result.Id.Value.ToString(),
-            BaselineId = result.BaselineId.Value.ToString(),
+            BaselineId = result.BaselineId.Value,
             ComparedAt = result.ComparedAt,
             MetricResults = result.MetricResults
                 .Select(ComparisonMetricDto.FromDomain)
@@ -128,12 +133,10 @@ public class ComparisonResultDto
     /// </summary>
     public ComparisonResult ToDomain()
     {
-        var baselineId = Guid.TryParse(BaselineId, out var baselineGuid)
-            ? new Domain.Baselines.BaselineId(baselineGuid)
-            : new Domain.Baselines.BaselineId();
+        var baselineId = new BaselineId(BaselineId);
 
         var comparisonId = Guid.TryParse(Id, out var comparisonGuid)
-            ? new ComparisonResultId(comparisonGuid)
+            ? new ComparisonResultId(comparisonGuid.ToString())
             : new ComparisonResultId();
 
         var metrics = MetricResults

@@ -1,7 +1,6 @@
 namespace PerformanceEngine.Baseline.Domain.Application.Services;
 
 using PerformanceEngine.Baseline.Domain.Application.Dto;
-using PerformanceEngine.Baseline.Domain.Domain.Baselines;
 
 /// <summary>
 /// Application facade service for baseline and comparison operations.

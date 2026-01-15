@@ -1,10 +1,11 @@
 namespace PerformanceEngine.Baseline.Domain.Application.Services;
 
-using System.Collections.Immutable;
 using PerformanceEngine.Baseline.Domain.Application.Dto;
+using PerformanceEngine.Baseline.Domain.Domain;
 using PerformanceEngine.Baseline.Domain.Domain.Baselines;
-using PerformanceEngine.Baseline.Domain.Domain.Ports;
 using PerformanceEngine.Baseline.Domain.Domain.Tolerances;
+using PerformanceEngine.Baseline.Domain.Ports;
+using PerformanceEngine.Metrics.Domain.Metrics;
 using PerformanceEngine.Metrics.Domain.Ports;
 
 /// <summary>
@@ -57,7 +58,7 @@ public class ComparisonService : IComparisonService
         var baselineId = await _orchestrator.CreateBaselineAsync(metricObjects, toleranceConfig);
 
         // Retrieve created baseline
-        var baseline = await _repository.GetAsync(baselineId);
+        var baseline = await _repository.GetByIdAsync(baselineId);
         if (baseline == null)
         {
             throw new BaselineDomainException("Failed to retrieve created baseline.");
@@ -80,7 +81,7 @@ public class ComparisonService : IComparisonService
             throw new ArgumentException($"Invalid baseline ID format: {request.BaselineId}", nameof(request));
         }
 
-        var baselineId = new BaselineId(baselineGuidValue);
+        var baselineId = new BaselineId(baselineGuidValue.ToString());
         var currentMetrics = request.CurrentMetrics
             .Select(m => new DtoMetricAdapter(m))
             .Cast<IMetric>()
@@ -92,8 +93,7 @@ public class ComparisonService : IComparisonService
         var result = await _orchestrator.CompareAsync(
             baselineId,
             currentMetrics,
-            toleranceConfig,
-            request.ConfidenceThreshold
+            toleranceConfig
         );
 
         return ComparisonResultDto.FromDomain(result);
@@ -106,12 +106,7 @@ public class ComparisonService : IComparisonService
             throw new ArgumentException("Baseline ID cannot be empty.", nameof(baselineId));
         }
 
-        if (!Guid.TryParse(baselineId, out var guidValue))
-        {
-            throw new ArgumentException($"Invalid baseline ID format: {baselineId}", nameof(baselineId));
-        }
-
-        var baseline = await _repository.GetAsync(new BaselineId(guidValue));
+        var baseline = await _repository.GetByIdAsync(new BaselineId(baselineId));
         return baseline == null ? null : BaselineDto.FromDomain(baseline);
     }
 
@@ -122,12 +117,7 @@ public class ComparisonService : IComparisonService
             throw new ArgumentException("Baseline ID cannot be empty.", nameof(baselineId));
         }
 
-        if (!Guid.TryParse(baselineId, out var guidValue))
-        {
-            return false;
-        }
-
-        return await _orchestrator.BaselineExistsAsync(new BaselineId(guidValue));
+        return await _orchestrator.BaselineExistsAsync(new BaselineId(baselineId));
     }
 
     public async Task DeleteBaselineAsync(string baselineId)
@@ -137,12 +127,7 @@ public class ComparisonService : IComparisonService
             throw new ArgumentException("Baseline ID cannot be empty.", nameof(baselineId));
         }
 
-        if (!Guid.TryParse(baselineId, out var guidValue))
-        {
-            throw new ArgumentException($"Invalid baseline ID format: {baselineId}", nameof(baselineId));
-        }
-
-        await _orchestrator.DeleteBaselineAsync(new BaselineId(guidValue));
+        await _orchestrator.DeleteBaselineAsync(new BaselineId(baselineId));
     }
 
     /// <summary>
@@ -158,9 +143,12 @@ public class ComparisonService : IComparisonService
             _dto = dto ?? throw new ArgumentNullException(nameof(dto));
         }
 
+        public Guid Id => _dto.Id;
         public string MetricType => _dto.MetricType;
-        public decimal Value => _dto.Value;
+        public double Value => _dto.Value;
         public string Unit => _dto.Unit;
-        public DateTime CollectedAt => _dto.CollectedAt;
+        public DateTime ComputedAt => _dto.ComputedAt;
+        public CompletessStatus CompletessStatus => CompletessStatus.COMPLETE;
+        public MetricEvidence Evidence => new() { SampleCount = 1, RequiredSampleCount = 1, AggregationWindow = "dto-reconstruction" };
     }
 }

@@ -3,6 +3,7 @@ namespace PerformanceEngine.Baseline.Domain.Application.Dto;
 using System.Collections.Immutable;
 using PerformanceEngine.Baseline.Domain.Domain.Baselines;
 using PerformanceEngine.Baseline.Domain.Domain.Tolerances;
+using PerformanceEngine.Metrics.Domain.Metrics;
 
 /// <summary>
 /// Data transfer object for baseline information.
@@ -36,19 +37,19 @@ public class BaselineDto
     public static BaselineDto FromDomain(Baseline baseline) =>
         new()
         {
-            Id = baseline.Id.Value.ToString(),
+            Id = baseline.Id.Value,
             CreatedAt = baseline.CreatedAt,
             MetricDtos = baseline.Metrics
                 .Select(m => new MetricDto
                 {
+                    Id = m.Id,
                     MetricType = m.MetricType,
                     Value = m.Value,
                     Unit = m.Unit,
-                    CollectedAt = m.CollectedAt
+                    ComputedAt = m.ComputedAt
                 })
                 .ToImmutableList(),
-            ToleranceDtos = baseline.ToleranceConfig
-                .GetAllTolerances()
+            ToleranceDtos = baseline.ToleranceConfig.Tolerances
                 .Select(ToleranceDto.FromDomain)
                 .ToImmutableList()
         };
@@ -60,7 +61,7 @@ public class BaselineDto
     public Baseline ToDomain()
     {
         var metrics = MetricDtos
-            .Select(m => new MockMetric(m.MetricType, m.Value, m.Unit, m.CollectedAt))
+            .Select(m => new DtoMetricAdapter(m))
             .Cast<IMetric>()
             .ToList();
 
@@ -68,30 +69,29 @@ public class BaselineDto
             ToleranceDtos.Select(t => t.ToDomain())
         );
 
-        var baselineId = Guid.TryParse(Id, out var guidValue)
-            ? new BaselineId(guidValue)
-            : new BaselineId();
+        var baselineId = new BaselineId(Id);
 
         return new Baseline(metrics, toleranceConfig, baselineId, CreatedAt);
     }
 
     /// <summary>
-    /// Mock metric implementation for DTO reconstruction.
-    /// This is a helper class used internally by ToDomain() to reconstruct metrics.
+    /// Adapter that implements IMetric from a MetricDto.
     /// </summary>
-    private sealed class MockMetric : IMetric
+    private sealed class DtoMetricAdapter : IMetric
     {
-        public MockMetric(string metricType, decimal value, string unit, DateTime collectedAt)
+        private readonly MetricDto _dto;
+
+        public DtoMetricAdapter(MetricDto dto)
         {
-            MetricType = metricType;
-            Value = value;
-            Unit = unit;
-            CollectedAt = collectedAt;
+            _dto = dto ?? throw new ArgumentNullException(nameof(dto));
         }
 
-        public string MetricType { get; }
-        public decimal Value { get; }
-        public string Unit { get; }
-        public DateTime CollectedAt { get; }
+        public Guid Id => _dto.Id;
+        public string MetricType => _dto.MetricType;
+        public double Value => _dto.Value;
+        public string Unit => _dto.Unit;
+        public DateTime ComputedAt => _dto.ComputedAt;
+        public CompletessStatus CompletessStatus => CompletessStatus.COMPLETE;
+        public MetricEvidence Evidence => new() { SampleCount = 1, RequiredSampleCount = 1, AggregationWindow = "dto-reconstruction" };
     }
 }

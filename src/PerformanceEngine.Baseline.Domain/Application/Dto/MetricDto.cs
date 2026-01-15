@@ -7,6 +7,11 @@ namespace PerformanceEngine.Baseline.Domain.Application.Dto;
 public class MetricDto
 {
     /// <summary>
+    /// Gets the unique identifier for this metric.
+    /// </summary>
+    public required Guid Id { get; init; }
+
+    /// <summary>
     /// Gets the unique identifier for this metric type.
     /// </summary>
     public required string MetricType { get; init; }
@@ -14,7 +19,7 @@ public class MetricDto
     /// <summary>
     /// Gets the numeric value of this metric.
     /// </summary>
-    public required decimal Value { get; init; }
+    public required double Value { get; init; }
 
     /// <summary>
     /// Gets the unit of measurement for this metric (e.g., "ms", "MB", "req/s").
@@ -22,7 +27,7 @@ public class MetricDto
     public required string Unit { get; init; }
 
     /// <summary>
-    /// Gets the timestamp when this metric was collected.
+    /// Gets the timestamp when this metric was computed.
     /// </summary>
-    public required DateTime CollectedAt { get; init; }
+    public required DateTime ComputedAt { get; init; }
 }

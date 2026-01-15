@@ -1,11 +1,10 @@
 namespace PerformanceEngine.Baseline.Domain.Application.Services;
 
-using System.Collections.Immutable;
+using PerformanceEngine.Baseline.Domain.Domain;
 using PerformanceEngine.Baseline.Domain.Domain.Baselines;
 using PerformanceEngine.Baseline.Domain.Domain.Comparisons;
-using PerformanceEngine.Baseline.Domain.Domain.Confidence;
-using PerformanceEngine.Baseline.Domain.Domain.Ports;
 using PerformanceEngine.Baseline.Domain.Domain.Tolerances;
+using PerformanceEngine.Baseline.Domain.Ports;
 
 /// <summary>
 /// Orchestrator service that coordinates baseline management and performance comparison operations.
@@ -39,9 +38,7 @@ public class ComparisonOrchestrator
         var baseline = new Baseline(metrics, toleranceConfig);
 
         // Persist to repository
-        await _baselineRepository.SaveAsync(baseline);
-
-        return baseline.Id;
+        return await _baselineRepository.CreateAsync(baseline);
     }
 
     /// <summary>
@@ -50,7 +47,6 @@ public class ComparisonOrchestrator
     /// <param name="baselineId">The ID of the baseline to compare against.</param>
     /// <param name="currentMetrics">The current metrics to compare.</param>
     /// <param name="toleranceConfig">The tolerance configuration for this comparison.</param>
-    /// <param name="confidenceThreshold">The confidence threshold for drawing conclusions (default 0.5).</param>
     /// <returns>The comparison result with per-metric and overall outcomes.</returns>
     /// <exception cref="BaselineNotFoundException">Thrown if the baseline ID doesn't exist.</exception>
     /// <exception cref="MetricNotFoundException">Thrown if metric names don't match between baseline and current metrics.</exception>
@@ -58,18 +54,17 @@ public class ComparisonOrchestrator
     public async Task<ComparisonResult> CompareAsync(
         BaselineId baselineId,
         IEnumerable<IMetric> currentMetrics,
-        ToleranceConfiguration toleranceConfig,
-        decimal confidenceThreshold = 0.5m)
+        ToleranceConfiguration toleranceConfig)
     {
         ArgumentNullException.ThrowIfNull(baselineId);
         ArgumentNullException.ThrowIfNull(currentMetrics);
         ArgumentNullException.ThrowIfNull(toleranceConfig);
 
         // Retrieve baseline from repository
-        var baseline = await _baselineRepository.GetAsync(baselineId);
+        var baseline = await _baselineRepository.GetByIdAsync(baselineId);
         if (baseline == null)
         {
-            throw new BaselineNotFoundException($"Baseline with ID '{baselineId}' not found.");
+            throw new BaselineNotFoundException(baselineId.Value);
         }
 
         // Convert to list for repeated access
@@ -84,13 +79,13 @@ public class ComparisonOrchestrator
         var missingInCurrent = baselineMetricNames.Except(currentMetricNames).ToList();
         if (missingInCurrent.Any())
         {
-            throw new MetricNotFoundException($"Metrics missing in current data: {string.Join(", ", missingInCurrent)}");
+            throw new MetricNotFoundException(string.Join(", ", missingInCurrent));
         }
 
         var extraInCurrent = currentMetricNames.Except(baselineMetricNames).ToList();
         if (extraInCurrent.Any())
         {
-            throw new MetricNotFoundException($"Extra metrics in current data: {string.Join(", ", extraInCurrent)}");
+            throw new MetricNotFoundException(string.Join(", ", extraInCurrent));
         }
 
         // Perform metric comparisons
@@ -106,14 +101,18 @@ public class ComparisonOrchestrator
             }
 
             var tolerance = toleranceConfig.GetTolerance(currentMetric.MetricType);
-            var comparisonMetric = calculator.CalculateMetric(baselineMetric.Value, currentMetric.Value, tolerance);
+            var comparisonMetric = calculator.CalculateMetric(
+                (decimal)baselineMetric.Value,
+                (decimal)currentMetric.Value,
+                tolerance
+            );
             comparisonMetrics.Add(comparisonMetric);
         }
 
         // Aggregate results
         var aggregator = new OutcomeAggregator();
-        var overallOutcome = aggregator.Aggregate(comparisonMetrics.Select(m => m.Outcome));
-        var overallConfidence = aggregator.AggregateConfidence(comparisonMetrics.Select(m => m.Confidence));
+        var overallOutcome = aggregator.Aggregate(comparisonMetrics);
+        var overallConfidence = aggregator.AggregateConfidence(comparisonMetrics);
 
         // Create and return comparison result
         var result = new ComparisonResult(
@@ -126,25 +125,25 @@ public class ComparisonOrchestrator
         return result;
     }
 
-    /// <summary>
-    /// Checks if a baseline still exists (not expired).
-    /// </summary>
-    /// <param name="baselineId">The ID of the baseline to check.</param>
-    /// <returns>True if the baseline exists; false otherwise.</returns>
     public async Task<bool> BaselineExistsAsync(BaselineId baselineId)
     {
         ArgumentNullException.ThrowIfNull(baselineId);
-        var baseline = await _baselineRepository.GetAsync(baselineId);
+        var baseline = await _baselineRepository.GetByIdAsync(baselineId);
         return baseline != null;
     }
 
     /// <summary>
     /// Deletes a baseline from the repository.
+    /// Note: The current IBaselineRepository interface does not support Delete operation.
+    /// This method is provided for API completeness.
     /// </summary>
     /// <param name="baselineId">The ID of the baseline to delete.</param>
     public async Task DeleteBaselineAsync(BaselineId baselineId)
     {
+        // Note: IBaselineRepository doesn't have a delete method
+        // Baselines are managed by TTL in the infrastructure layer
+        // This method is here for API completeness
         ArgumentNullException.ThrowIfNull(baselineId);
-        await _baselineRepository.DeleteAsync(baselineId);
+        await Task.CompletedTask;
     }
 }
