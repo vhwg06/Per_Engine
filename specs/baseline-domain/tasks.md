@@ -320,7 +320,7 @@
 
 ### Full Workflow Integration
 
-- [ ] T055 Create `tests/PerformanceEngine.Baseline.Domain.Tests/Integration/BaselineComparisonWorkflowTests.cs` with:
+- [x] T055 Create `tests/PerformanceEngine.Baseline.Domain.Tests/Integration/BaselineComparisonWorkflowTests.cs` with:
   - Test: Create baseline with metrics
   - Test: Compare identical current metrics → NO_SIGNIFICANT_CHANGE
   - Test: Compare regressed metrics → REGRESSION
@@ -328,19 +328,19 @@
   - Test: Compare with low confidence → INCONCLUSIVE
   - Test: Multiple metrics aggregation (worst-case priority)
 
-- [ ] T056 Create `tests/PerformanceEngine.Baseline.Infrastructure.Tests/Integration/RedisBaselineWorkflowTests.cs` with:
+- [x] T056 Create `tests/PerformanceEngine.Baseline.Infrastructure.Tests/Integration/RedisBaselineWorkflowTests.cs` with:
   - Test: Create baseline → store in Redis → retrieve → compare
   - Test: Expired baseline returns null → comparison fails gracefully
   - Test: Concurrent baseline creation/retrieval (no race conditions)
 
 ### Cross-Domain Integration
 
-- [ ] T057 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Integration/MetricsDomainIntegrationTests.cs` with:
+- [x] T057 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Integration/MetricsDomainIntegrationTests.cs` with:
   - Test: Baseline accepts Metrics from Metrics Domain (IMetric interface)
   - Test: Comparison works with real Metric objects from Metrics Domain
   - Depends: PerformanceEngine.Metrics.Domain assembly
 
-- [ ] T058 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Integration/EvaluationDomainIntegrationTests.cs` with:
+- [x] T058 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Integration/EvaluationDomainIntegrationTests.cs` with:
   - Test: Baseline can store optional evaluation results from Evaluation Domain
   - Test: Baseline with/without evaluation results both valid
 
@@ -354,13 +354,13 @@
 
 ### Implementation Guides
 
-- [ ] T059 [P] Create `src/PerformanceEngine.Baseline.Domain/IMPLEMENTATION_GUIDE.md` with:
+- [x] T059 [P] Create `src/PerformanceEngine.Baseline.Domain/IMPLEMENTATION_GUIDE.md` with:
   - Architecture overview (domain layers, dependencies)
   - Key classes & responsibilities
   - Extension points (tolerance strategies, custom rules - Phase 2)
   - Troubleshooting guide
 
-- [ ] T060 [P] Create `src/PerformanceEngine.Baseline.Infrastructure/INFRASTRUCTURE_GUIDE.md` with:
+- [x] T060 [P] Create `src/PerformanceEngine.Baseline.Infrastructure/INFRASTRUCTURE_GUIDE.md` with:
   - Redis setup & configuration
   - Connection pooling details
   - TTL & eviction policy
@@ -368,13 +368,13 @@
 
 ### Validation & Performance
 
-- [ ] T061 Create `tests/PerformanceEngine.Baseline.Domain.Tests/Performance/LatencyTests.cs` with:
+- [x] T061 Create `tests/PerformanceEngine.Baseline.Domain.Tests/Performance/LatencyTests.cs` with:
   - Test: Comparison latency < 20ms (p95)
   - Test: 100 concurrent comparisons complete without error
   - Profile: Memory usage, allocation patterns
   - Target: Meets success criteria SC-002 (all comparisons < 100ms)
 
-- [ ] T062 Create `tests/PerformanceEngine.Baseline.Infrastructure.Tests/Performance/RedisLatencyTests.cs` with:
+- [x] T062 Create `tests/PerformanceEngine.Baseline.Infrastructure.Tests/Performance/RedisLatencyTests.cs` with:
   - Test: Redis create + retrieve + deserialize < 15ms (p95)
   - Test: Redis handles 1000 qps baseline storage
   - Profile: Connection pool efficiency
@@ -389,7 +389,7 @@
 
 ### Edge Case & Error Handling
 
-- [ ] T063 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/EdgeCases/EdgeCaseTests.cs` with:
+- [x] T063 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/EdgeCases/EdgeCaseTests.cs` with:
   - Test: Missing metric in current results (metric in baseline but not current)
   - Test: New metric in current results (not in baseline) → error or warning?
   - Test: Null/NaN metric values → error handling
@@ -398,7 +398,7 @@
   - Test: Very small metrics (floating-point precision edges)
   - Test: Very large metrics (overflow edges)
 
-- [ ] T064 [P] Create comprehensive exception handling tests in `tests/PerformanceEngine.Baseline.Domain.Tests/ExceptionTests.cs` with:
+- [x] T064 [P] Create comprehensive exception handling tests in `tests/PerformanceEngine.Baseline.Domain.Tests/ExceptionTests.cs` with:
   - Test: BaselineNotFoundException on missing baseline
   - Test: ToleranceValidationException on invalid tolerance
   - Test: DomainInvariantViolatedException on constraint violation
@@ -408,7 +408,7 @@
 
 - [ ] T065 [P] Add `.editorconfig` to baseline domain project root (C# style/formatting rules)
 - [ ] T066 [P] Add XML documentation comments to all public types (IBaselineRepository, Baseline, ComparisonResult, etc.)
-- [ ] T067 [P] Add VERIFICATION_CHECKLIST.md following pattern from PerformanceEngine.Metrics.Domain
+- [x] T067 [P] Add VERIFICATION_CHECKLIST.md following pattern from PerformanceEngine.Metrics.Domain
 
 ### Continuous Integration Setup
 
