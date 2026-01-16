@@ -12,22 +12,11 @@ namespace PerformanceEngine.Evaluation.Domain;
 /// - Evidence trail is complete (no missing metric references)
 /// </summary>
 public record EvaluationResult(
-    /// <summary>Unique identifier assigned at evaluation time.</summary>
     Guid Id,
-    
-    /// <summary>Overall evaluation outcome severity (Pass, Warning, Fail).</summary>
     Severity Outcome,
-    
-    /// <summary>Immutable list of rule violations detected during evaluation.</summary>
     ImmutableList<Violation> Violations,
-    
-    /// <summary>Complete audit trail of evaluation decisions and evidence.</summary>
     ImmutableList<EvaluationEvidence> Evidence,
-    
-    /// <summary>Human-readable rationale for the evaluation outcome.</summary>
     string OutcomeReason,
-    
-    /// <summary>UTC timestamp when evaluation was performed.</summary>
     DateTime EvaluatedAt
 )
 {

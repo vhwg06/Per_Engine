@@ -11,22 +11,11 @@ namespace PerformanceEngine.Evaluation.Domain;
 /// - Violation cannot be modified after construction
 /// </summary>
 public record Violation(
-    /// <summary>Name of the rule that was violated.</summary>
     string RuleName,
-    
-    /// <summary>Name of the metric that violated the rule.</summary>
     string MetricName,
-    
-    /// <summary>Severity level of the violation.</summary>
     Severity Severity,
-    
-    /// <summary>Actual metric value that caused the violation (string to preserve precision).</summary>
     string ActualValue,
-    
-    /// <summary>Threshold value that was exceeded (string to preserve precision).</summary>
     string ThresholdValue,
-    
-    /// <summary>Human-readable violation message.</summary>
     string Message
 )
 {

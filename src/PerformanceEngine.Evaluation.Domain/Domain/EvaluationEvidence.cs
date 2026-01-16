@@ -12,28 +12,13 @@ namespace PerformanceEngine.Evaluation.Domain;
 /// - Cannot be modified after construction
 /// </summary>
 public record EvaluationEvidence(
-    /// <summary>Unique identifier of the rule that was evaluated.</summary>
     string RuleId,
-    
-    /// <summary>Human-readable name of the rule.</summary>
     string RuleName,
-    
-    /// <summary>Metrics used in this rule's evaluation.</summary>
     ImmutableList<MetricReference> Metrics,
-    
-    /// <summary>Actual values of metrics at evaluation time (strings for precision).</summary>
     ImmutableDictionary<string, string> ActualValues,
-    
-    /// <summary>Expected constraint expression that was evaluated.</summary>
     string ExpectedConstraint,
-    
-    /// <summary>True if constraint was satisfied, false if violated.</summary>
     bool ConstraintSatisfied,
-    
-    /// <summary>The evaluation decision outcome (why the rule passed or failed).</summary>
     string DecisionOutcome,
-    
-    /// <summary>UTC timestamp when this evidence was recorded.</summary>
     DateTime RecordedAtUtc
 )
 {

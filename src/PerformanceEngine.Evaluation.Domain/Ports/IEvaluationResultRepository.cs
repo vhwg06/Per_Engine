@@ -1,5 +1,7 @@
 namespace PerformanceEngine.Evaluation.Ports;
 
+using PerformanceEngine.Evaluation.Domain;
+
 /// <summary>
 /// Repository port (interface) defining the contract for persisting and retrieving
 /// evaluation results. This abstraction is technology-agnostic and remains stable
