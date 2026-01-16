@@ -1,0 +1,169 @@
+# Performance Engine Configuration Example
+
+# Schema version (required)
+schemaVersion: "1.0"
+
+# Test execution parameters (required)
+testExecution:
+  # Test duration (required)
+  # Format: <number><unit> where unit is s (seconds), m (minutes), or h (hours)
+  duration: "10m"
+  
+  # Number of concurrent virtual users (required)
+  virtualUsers: 500
+  
+  # Ramp-up period - time to reach full virtual user count (optional, default: 0s)
+  rampUpPeriod: "2m"
+  
+  # Target endpoint to test (required)
+  target: "https://api.example.com/v1/test"
+
+# Request-level settings (optional)
+requestSettings:
+  # Request timeout (optional, default: 30s)
+  timeout: "60s"
+  
+  # Number of retry attempts on failure (optional, default: 3)
+  retries: 5
+  
+  # Delay between retry attempts (optional, default: 1s)
+  retryDelay: "2s"
+  
+  # Custom HTTP headers (optional)
+  # Use ${VAR_NAME} for environment variable substitution
+  headers:
+    User-Agent: "PerformanceEngine/1.0"
+    Authorization: "${API_TOKEN}"
+    X-Custom-Header: "test-value"
+
+# Rate limiting configuration (optional)
+rateLimits:
+  # Maximum requests per second (optional, default: unlimited)
+  requestsPerSecond: 5000
+  
+  # Maximum concurrent connections (optional, default: 100)
+  concurrency: 200
+
+# Performance thresholds for pass/fail criteria (optional)
+thresholds:
+  # P95 latency threshold (critical)
+  - metric: "p95"
+    operator: "<="  # <, <=, >, >=, ==
+    value: 300      # milliseconds
+    severity: "critical"
+  
+  # P99 latency threshold (warning)
+  - metric: "p99"
+    operator: "<="
+    value: 500
+    severity: "warning"
+  
+  # Error rate threshold (critical)
+  - metric: "errorRate"
+    operator: "<="
+    value: 0.01     # 1% error rate
+    severity: "critical"
+  
+  # Throughput threshold (warning)
+  - metric: "throughput"
+    operator: ">="
+    value: 4000     # requests per second
+    severity: "warning"
+
+# Named test profiles (optional)
+# Profiles override base configuration values
+profiles:
+  # Quick smoke test
+  smoke-test:
+    testExecution:
+      duration: "1m"
+      virtualUsers: 10
+    thresholds:
+      - metric: "errorRate"
+        operator: "<="
+        value: 0.05  # 5% error rate acceptable for smoke test
+  
+  # Standard load test
+  load-test:
+    testExecution:
+      duration: "15m"
+      virtualUsers: 1000
+    rateLimits:
+      requestsPerSecond: 10000
+      concurrency: 300
+    thresholds:
+      - metric: "p95"
+        operator: "<="
+        value: 250
+      - metric: "errorRate"
+        operator: "<="
+        value: 0.005  # 0.5% error rate
+  
+  # Stress test with high load
+  stress-test:
+    testExecution:
+      duration: "30m"
+      virtualUsers: 2000
+      rampUpPeriod: "5m"
+    rateLimits:
+      requestsPerSecond: 20000
+      concurrency: 500
+    requestSettings:
+      timeout: "90s"
+      retries: 10
+    thresholds:
+      - metric: "p95"
+        operator: "<="
+        value: 500
+      - metric: "p99"
+        operator: "<="
+        value: 1000
+      - metric: "errorRate"
+        operator: "<="
+        value: 0.02  # 2% error rate acceptable under stress
+
+# Usage Examples:
+#
+# 1. Run with default configuration:
+#    performance-engine run --config config.yaml
+#
+# 2. Run with specific profile:
+#    performance-engine run --config config.yaml --profile smoke-test
+#
+# 3. Run and save as baseline:
+#    performance-engine baseline save --config config.yaml --name "release-1.0"
+#
+# 4. Compare against baseline:
+#    performance-engine baseline compare --config config.yaml --baseline "release-1.0"
+#
+# 5. Validate configuration without running:
+#    performance-engine validate --config config.yaml
+#
+# 6. Override with environment variables:
+#    export PERF_ENGINE_TEST_EXECUTION_VIRTUAL_USERS=1500
+#    export API_TOKEN="your-api-token"
+#    performance-engine run --config config.yaml
+#
+# 7. Override with CLI arguments:
+#    performance-engine run --config config.yaml --duration 20m --virtual-users 750
+
+# Environment Variable Reference:
+# - PERF_ENGINE_TEST_EXECUTION_DURATION
+# - PERF_ENGINE_TEST_EXECUTION_VIRTUAL_USERS
+# - PERF_ENGINE_TEST_EXECUTION_RAMP_UP_PERIOD
+# - PERF_ENGINE_TEST_EXECUTION_TARGET
+# - PERF_ENGINE_REQUEST_SETTINGS_TIMEOUT
+# - PERF_ENGINE_REQUEST_SETTINGS_RETRIES
+# - PERF_ENGINE_RATE_LIMITS_REQUESTS_PER_SECOND
+# - PERF_ENGINE_RATE_LIMITS_CONCURRENCY
+# - API_TOKEN (used in Authorization header)
+
+# Default Values (applied when not specified):
+# - testExecution.rampUpPeriod: 0s
+# - requestSettings.timeout: 30s
+# - requestSettings.retries: 3
+# - requestSettings.retryDelay: 1s
+# - rateLimits.requestsPerSecond: unlimited
+# - rateLimits.concurrency: 100
+# - thresholds: [] (no thresholds)
+# - profiles: {} (no profiles)
