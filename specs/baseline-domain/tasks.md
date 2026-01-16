@@ -139,13 +139,13 @@
 
 ### Baseline & BaselineId Tests
 
-- [ ] T030 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Baselines/BaselineIdTests.cs` with:
+- [x] T030 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Baselines/BaselineIdTests.cs` with:
   - Test: UUID generation
   - Test: Equality semantics
   - Test: Hash consistency
   - Test: Immutability
 
-- [ ] T031 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Baselines/BaselineTests.cs` with:
+- [x] T031 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Baselines/BaselineTests.cs` with:
   - Test: Baseline creation with valid inputs
   - Test: Baseline rejects empty metrics (invariant)
   - Test: Baseline rejects duplicate metric names (invariant)
@@ -155,38 +155,38 @@
 
 ### Tolerance Tests
 
-- [ ] T032 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Tolerances/ToleranceTests.cs` with:
+- [x] T032 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Tolerances/ToleranceTests.cs` with:
   - Test: RELATIVE tolerance: IsWithinTolerance calculation (±10%)
   - Test: ABSOLUTE tolerance: IsWithinTolerance calculation (±50ms)
   - Test: Tolerance rejects negative amount (invariant)
   - Test: Tolerance rejects empty metric name (invariant)
 
-- [ ] T033 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Tolerances/ToleranceConfigurationTests.cs` with:
+- [x] T033 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Tolerances/ToleranceConfigurationTests.cs` with:
   - Test: GetTolerance returns correct rule
   - Test: GetTolerance throws KeyNotFoundException if metric not found
   - Test: HasTolerance returns true/false correctly
 
 ### Confidence Tests
 
-- [ ] T034 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Confidence/ConfidenceLevelTests.cs` with:
+- [x] T034 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Confidence/ConfidenceLevelTests.cs` with:
   - Test: ConfidenceLevel rejects values < 0.0 or > 1.0 (invariant)
   - Test: IsConclusive(threshold) returns true/false correctly
   - Test: Equality semantics (floating-point precision tolerance)
 
-- [ ] T035 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Confidence/ConfidenceCalculatorTests.cs` with:
+- [x] T035 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Confidence/ConfidenceCalculatorTests.cs` with:
   - Test: CalculateConfidence produces [0.0, 1.0] range
   - Test: CalculateConfidence increases with magnitude beyond tolerance
   - Test: Boundary conditions (on tolerance, at 0%, at 100%)
 
 ### Comparison Tests
 
-- [ ] T036 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Comparisons/ComparisonMetricTests.cs` with:
+- [x] T036 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Comparisons/ComparisonMetricTests.cs` with:
   - Test: ComparisonMetric calculates absoluteChange correctly
   - Test: ComparisonMetric calculates relativeChange correctly
   - Test: ComparisonMetric outcome determined by tolerance + confidence
   - Test: Immutability (read-only properties)
 
-- [ ] T037 Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Comparisons/ComparisonCalculatorTests.cs` with:
+- [x] T037 Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Comparisons/ComparisonCalculatorTests.cs` with:
   - Test: CalculateMetric with RELATIVE tolerance
   - Test: CalculateMetric with ABSOLUTE tolerance
   - Test: CalculateMetric determines correct outcome (REGRESSION/IMPROVEMENT/NO_SIGNIFICANT_CHANGE)
@@ -194,7 +194,7 @@
   - Test: Edge case: baseline = 0 (division by zero in relative change)
   - Depends: T024
 
-- [ ] T038 Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Comparisons/ComparisonResultTests.cs` with:
+- [x] T038 Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Comparisons/ComparisonResultTests.cs` with:
   - Test: ComparisonResult aggregates metric outcomes (worst-case strategy)
   - Test: ComparisonResult aggregates confidence (minimum)
   - Test: ComparisonResult enforces ComparisonResultInvariants
@@ -203,14 +203,14 @@
 
 ### Determinism Test Harness
 
-- [ ] T039 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Comparisons/DeterminismTests.cs` with:
+- [x] T039 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Comparisons/DeterminismTests.cs` with:
   - Test: CalculateMetric (1000 runs with identical input → identical result)
   - Test: ComparisonResult (1000 runs with identical input → identical result)
   - Purpose: Verify no floating-point ambiguity, no ordering effects, reproducibility
 
 ### Invariant Enforcement Tests
 
-- [ ] T040 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Baselines/BaselineInvariantTests.cs` with:
+- [x] T040 [P] Create `tests/PerformanceEngine.Baseline.Domain.Tests/Domain/Baselines/BaselineInvariantTests.cs` with:
   - Test: AssertValid throws on empty metrics
   - Test: AssertValid throws on duplicate metric names
   - Test: AssertValid throws on invalid tolerance config
@@ -228,31 +228,31 @@
 
 ### Application DTOs
 
-- [ ] T041 [P] Create `src/PerformanceEngine.Baseline.Domain/Application/Dto/BaselineDto.cs` with:
+- [x] T041 [P] Create `src/PerformanceEngine.Baseline.Domain/Application/Dto/BaselineDto.cs` with:
   - Properties: Id, CreatedAt, MetricDtos, Tolerance config
   - Mapper: Baseline ↔ BaselineDto (serialization)
 
-- [ ] T042 [P] Create `src/PerformanceEngine.Baseline.Domain/Application/Dto/ComparisonRequestDto.cs` with:
+- [x] T042 [P] Create `src/PerformanceEngine.Baseline.Domain/Application/Dto/ComparisonRequestDto.cs` with:
   - Properties: BaselineId, CurrentMetrics, Tolerance config, ConfidenceThreshold
 
-- [ ] T043 [P] Create `src/PerformanceEngine.Baseline.Domain/Application/Dto/ComparisonResultDto.cs` with:
+- [x] T043 [P] Create `src/PerformanceEngine.Baseline.Domain/Application/Dto/ComparisonResultDto.cs` with:
   - Properties: OverallOutcome, Confidence, MetricResults (per-metric details)
   - Mapper: ComparisonResult ↔ ComparisonResultDto
 
 ### Application Services
 
-- [ ] T044 Create `src/PerformanceEngine.Baseline.Domain/Application/Services/ComparisonOrchestrator.cs` with:
+- [x] T044 Create `src/PerformanceEngine.Baseline.Domain/Application/Services/ComparisonOrchestrator.cs` with:
   - Method: CreateBaselineAsync(metrics, config) → BaselineId
   - Method: CompareAsync(baselineId, currentMetrics, threshold) → ComparisonResult
   - Error handling: BaselineNotFoundException (expired), MetricNotFoundException (mismatch)
   - Depends: T015 (BaselineFactory), T025 (ComparisonResult)
 
-- [ ] T045 [P] Create `src/PerformanceEngine.Baseline.Domain/Application/Services/ComparisonService.cs` interface (application facade)
+- [x] T045 [P] Create `src/PerformanceEngine.Baseline.Domain/Application/Services/ComparisonService.cs` interface (application facade)
 
 ### Use Cases (Optional, Phase 1)
 
-- [ ] T046 [P] Create `src/PerformanceEngine.Baseline.Domain/Application/UseCases/CreateBaselineUseCase.cs` (optional orchestration wrapper)
-- [ ] T047 [P] Create `src/PerformanceEngine.Baseline.Domain/Application/UseCases/PerformComparisonUseCase.cs` (optional orchestration wrapper)
+- [x] T046 [P] Create `src/PerformanceEngine.Baseline.Domain/Application/UseCases/CreateBaselineUseCase.cs` (optional orchestration wrapper)
+- [x] T047 [P] Create `src/PerformanceEngine.Baseline.Domain/Application/UseCases/PerformComparisonUseCase.cs` (optional orchestration wrapper)
 
 ---
 
@@ -266,17 +266,17 @@
 
 ### Redis Connection & Configuration
 
-- [ ] T048 [P] Create `src/PerformanceEngine.Baseline.Infrastructure/Persistence/RedisConnectionFactory.cs` with:
+- [x] T048 [P] Create `src/PerformanceEngine.Baseline.Infrastructure/Persistence/RedisConnectionFactory.cs` with:
   - Connection pooling, TTL configuration (24h default)
   - Configuration from appsettings.json (Redis:ConnectionString, BaselineTtl)
 
-- [ ] T049 [P] Create `src/PerformanceEngine.Baseline.Infrastructure/Configuration/BaselineInfrastructureExtensions.cs` with:
+- [x] T049 [P] Create `src/PerformanceEngine.Baseline.Infrastructure/Configuration/BaselineInfrastructureExtensions.cs` with:
   - Dependency injection setup: IConnectionMultiplexer, IBaselineRepository
   - ServiceCollection.AddBaselineInfrastructure()
 
 ### Redis Adapter Implementation
 
-- [ ] T050 Create `src/PerformanceEngine.Baseline.Infrastructure/Persistence/RedisBaselineRepository.cs` implementing `IBaselineRepository` with:
+- [x] T050 Create `src/PerformanceEngine.Baseline.Infrastructure/Persistence/RedisBaselineRepository.cs` implementing `IBaselineRepository` with:
   - CreateAsync: Serialize baseline, store in Redis with TTL, return BaselineId
   - GetByIdAsync: Retrieve from Redis, deserialize, return Baseline or null if expired
   - ListRecentAsync: Retrieve recent baselines (ordered by creation time)
@@ -285,18 +285,18 @@
 
 ### Serialization & Mapping
 
-- [ ] T051 [P] Create `src/PerformanceEngine.Baseline.Infrastructure/Persistence/BaselineRedisMapper.cs` with:
+- [x] T051 [P] Create `src/PerformanceEngine.Baseline.Infrastructure/Persistence/BaselineRedisMapper.cs` with:
   - Serialize: Baseline → JSON (IMetric[], tolerance config)
   - Deserialize: JSON → Baseline (reconstruct from storage)
   - Round-trip fidelity: Same baseline serialized/deserialized → equal
 
-- [ ] T052 [P] Create `src/PerformanceEngine.Baseline.Infrastructure/Persistence/RedisKeyBuilder.cs` for:
+- [x] T052 [P] Create `src/PerformanceEngine.Baseline.Infrastructure/Persistence/RedisKeyBuilder.cs` for:
   - Key naming convention: baseline:{id}, baseline:recent:{timestamp}
   - Prevents key collisions
 
 ### Infrastructure Tests
 
-- [ ] T053 Create `tests/PerformanceEngine.Baseline.Infrastructure.Tests/Persistence/RedisBaselineRepositoryTests.cs` with:
+- [x] T053 Create `tests/PerformanceEngine.Baseline.Infrastructure.Tests/Persistence/RedisBaselineRepositoryTests.cs` with:
   - Test: CreateAsync stores baseline, returns BaselineId
   - Test: GetByIdAsync retrieves stored baseline (equality)
   - Test: GetByIdAsync returns null if baseline expired
@@ -305,7 +305,7 @@
   - Test: Concurrent reads don't interfere
   - Depends: T050
 
-- [ ] T054 [P] Create `tests/PerformanceEngine.Baseline.Infrastructure.Tests/Persistence/BaselineRedisMapperTests.cs` with:
+- [x] T054 [P] Create `tests/PerformanceEngine.Baseline.Infrastructure.Tests/Persistence/BaselineRedisMapperTests.cs` with:
   - Test: Serialize/deserialize round-trip fidelity
   - Test: Handles null evaluation results
   - Test: Handles edge case metrics (zero values, very large values)
