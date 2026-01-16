@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>0.1.0</Version>
+    <Title>Performance Engine - Application Layer</Title>
+    <Description>Application orchestration layer for performance evaluation</Description>
+    <Authors>Performance Engine Team</Authors>
+    <PackageId>PerformanceEngine.Application</PackageId>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PerformanceEngine.Metrics.Domain\PerformanceEngine.Metrics.Domain.csproj" />
+    <ProjectReference Include="..\PerformanceEngine.Profile.Domain\PerformanceEngine.Profile.Domain.csproj" />
+    <ProjectReference Include="..\PerformanceEngine.Evaluation.Domain\PerformanceEngine.Evaluation.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Collections.Immutable" Version="10.0.0" />
+  </ItemGroup>
+
+</Project>
