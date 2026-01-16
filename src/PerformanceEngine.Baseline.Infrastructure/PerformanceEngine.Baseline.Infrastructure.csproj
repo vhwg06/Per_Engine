@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>0.1.0</Version>
+    <Title>Performance Engine - Baseline Infrastructure</Title>
+    <Description>Infrastructure adapters for Baseline Domain (Redis persistence, dependency injection)</Description>
+    <Authors>Performance Engine Team</Authors>
+    <PackageId>PerformanceEngine.Baseline.Infrastructure</PackageId>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <RootNamespace>PerformanceEngine.Baseline.Infrastructure</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StackExchange.Redis" Version="2.8.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../PerformanceEngine.Baseline.Domain/PerformanceEngine.Baseline.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

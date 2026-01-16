@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>0.1.0</Version>
+    <Title>Performance Engine - Baseline Domain</Title>
+    <Description>Domain models and comparison logic for performance baseline establishment and regression detection</Description>
+    <Authors>Performance Engine Team</Authors>
+    <PackageId>PerformanceEngine.Baseline.Domain</PackageId>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Collections.Immutable" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../PerformanceEngine.Metrics.Domain/PerformanceEngine.Metrics.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

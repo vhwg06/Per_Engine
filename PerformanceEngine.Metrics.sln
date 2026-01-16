@@ -19,6 +19,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceEngine.Profile.D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceEngine.Profile.Domain.Tests", "tests\PerformanceEngine.Profile.Domain.Tests\PerformanceEngine.Profile.Domain.Tests.csproj", "{79A1FB92-539F-437D-B8A1-5A56949A5BA5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceEngine.Baseline.Domain", "src\PerformanceEngine.Baseline.Domain\PerformanceEngine.Baseline.Domain.csproj", "{A1111111-1111-1111-1111-111111111111}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceEngine.Baseline.Domain.Tests", "tests\PerformanceEngine.Baseline.Domain.Tests\PerformanceEngine.Baseline.Domain.Tests.csproj", "{A2222222-2222-2222-2222-222222222222}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceEngine.Baseline.Infrastructure", "src\PerformanceEngine.Baseline.Infrastructure\PerformanceEngine.Baseline.Infrastructure.csproj", "{A3333333-3333-3333-3333-333333333333}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceEngine.Baseline.Infrastructure.Tests", "tests\PerformanceEngine.Baseline.Infrastructure.Tests\PerformanceEngine.Baseline.Infrastructure.Tests.csproj", "{A4444444-4444-4444-4444-444444444444}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,11 +57,31 @@ Global
 		{79A1FB92-539F-437D-B8A1-5A56949A5BA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79A1FB92-539F-437D-B8A1-5A56949A5BA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79A1FB92-539F-437D-B8A1-5A56949A5BA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1111111-1111-1111-1111-111111111111}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1111111-1111-1111-1111-111111111111}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1111111-1111-1111-1111-111111111111}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1111111-1111-1111-1111-111111111111}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2222222-2222-2222-2222-222222222222}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2222222-2222-2222-2222-222222222222}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2222222-2222-2222-2222-222222222222}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2222222-2222-2222-2222-222222222222}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3333333-3333-3333-3333-333333333333}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3333333-3333-3333-3333-333333333333}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3333333-3333-3333-3333-333333333333}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3333333-3333-3333-3333-333333333333}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4444444-4444-4444-4444-444444444444}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4444444-4444-4444-4444-444444444444}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4444444-4444-4444-4444-444444444444}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4444444-4444-4444-4444-444444444444}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6D13E5CF-EEB3-4BA6-9566-FD3CD8944F85} = {F553D058-E0C6-4097-9114-F96B5C58DF81}
 		{0C2DE014-DE4F-4F3F-BADF-47FCA4936872} = {9479A70C-3983-4B98-A3B8-D47D818E3D1E}
 		{07047206-234A-4DEF-95B4-4949BDA8CD6D} = {F553D058-E0C6-4097-9114-F96B5C58DF81}
 		{79A1FB92-539F-437D-B8A1-5A56949A5BA5} = {9479A70C-3983-4B98-A3B8-D47D818E3D1E}
+		{A1111111-1111-1111-1111-111111111111} = {F553D058-E0C6-4097-9114-F96B5C58DF81}
+		{A2222222-2222-2222-2222-222222222222} = {9479A70C-3983-4B98-A3B8-D47D818E3D1E}
+		{A3333333-3333-3333-3333-333333333333} = {F553D058-E0C6-4097-9114-F96B5C58DF81}
+		{A4444444-4444-4444-4444-444444444444} = {9479A70C-3983-4B98-A3B8-D47D818E3D1E}
 	EndGlobalSection
 EndGlobal
