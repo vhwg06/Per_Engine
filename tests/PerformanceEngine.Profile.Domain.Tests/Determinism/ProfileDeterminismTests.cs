@@ -32,7 +32,7 @@ public class ProfileDeterminismTests
         var result1 = _resolver.Resolve(profileObj, overrides);
 
         // Resolve in reverse order
-        var result2 = _resolver.Resolve(profileObj, overrides.Reverse().ToList());
+        var result2 = _resolver.Resolve(profileObj, overrides.AsEnumerable().Reverse().ToList());
 
         // Resolve in shuffled order
         var shuffled = overrides.OrderBy(_ => Guid.NewGuid()).ToList();
